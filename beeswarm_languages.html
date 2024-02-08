@@ -1,0 +1,611 @@
+ <!DOCTYPE html>
+ <html>
+ 
+ <head>
+     <script src="https://d3js.org/d3.v5.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.9.1/d3-tip.js"></script>
+     <title>D3 Beeswarm Chart</title>
+ 
+     <style>
+         body {
+             background-color: #6d6969;
+             color: white; /* Font color */
+             font-family: sans-serif;
+             overflow-x: hidden; /* Prevent horizontal overflow */
+         }
+ 
+ 
+         #chart-container {
+             position: relative;
+             display: flex;
+             width: 100%;
+         }
+ 
+         #myDiv {
+             flex: 0 0 70%;
+         }
+ 
+         #titles-container {
+             position: fixed;
+             top: 0;
+             right: 0;
+             width: 22%;
+             height: 100%;
+             overflow-y: auto;
+             padding: 10px;
+             box-sizing: border-box;
+             background-color: #6d6969; /* Light grey background */
+         }
+ 
+ 
+         #author-title {
+             font-size: 18px;
+             font-weight: bold;
+             text-align: center;
+             margin-bottom: 10px;
+         }
+ 
+         #pdf-image {
+             border-radius: 10px;
+             display: none; /* Hide the image */
+         }
+ 
+         #date {
+             font-size: 14px;
+             margin: 5px;
+         }
+ 
+         #title {
+             font-size: 14px;
+             margin: 5px;
+         }
+ 
+         .title-box {
+             font-size: 14px;
+             margin: 5px;
+         }
+ 
+         #yAxis {
+             position: fixed;
+             top: 0;
+             left: 0;
+             z-index: 1;
+             
+         }
+ 
+ 
+         .grid {
+             stroke: white; /* Font color for grid lines */
+             stroke-opacity: 0.5;
+             shape-rendering: crispEdges;
+         }
+ 
+         .grid.vertical {
+             stroke-dasharray: 2, 2; /* Dotted line for vertical grid lines */
+         }
+ 
+         .d3-tip {
+             line-height: 1;
+             font-weight: bold;
+             padding: 12px;
+             background: rgba(44, 43, 43, 0.8);
+             color: #fff;
+             border-radius: 2px;
+         }
+ 
+         #backButton {
+         position: absolute;
+         top: 10px;
+         right: 10px;
+         padding: 10px;
+         cursor: pointer;
+         background-color: #808080;
+         color: white;
+         z-index: 2; /* Add this line */
+        
+         .active {
+            background-color: #808080;
+        }
+        }
+        .language-label {
+            font-size: 12px;
+            margin-right: 10px;
+        }
+
+        .legend-container {
+            position: fixed;
+            bottom: 100px; 
+            left: 50px;
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 300px;
+            z-index: 2; 
+            background: rgba(114, 112, 112, 0.8);
+            color: white;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            color: white;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            color: white;
+            
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            margin-right: 5px;
+            border-radius: 50%;
+            color: white;
+        }
+
+
+        #xAxisContainer {
+            position: fixed;
+            bottom: 0;
+            left: 8px;
+            background-color: #6d6969;
+            z-index: 1;
+        }
+
+
+
+     </style>
+ </head>
+ 
+ <body>
+     <button id="backButton">Home</button>
+ 
+     <div id="chart-container">
+         <div id="myDiv">
+             <h2>Frequency by Creator and Year</h2>
+             <div id="chart-svg-container">
+                 <svg id="chart-svg" max-width="100%" height="6000"></svg>
+                 <svg id="xAxis" width="60%" height="50"></svg>
+ 
+             </div>
+             
+         </div>
+         <div id="titles-container">
+             <div id="author-title"></div>
+             <img id="pdf-image" src="" alt="Author Image" width="150" height="150">
+             <div id="date"></div>
+             <div id="title"></div>
+             <div id="url"></div>
+         </div>
+         <div class="legend-container">
+            <div class="legend">
+                <svg id="legend" max-width="300" ></svg>
+            </div>
+        </div>
+         <div id="xAxisContainer">
+             <svg id="xAxisFixed" max-width="100%" height="50"></svg>
+         </div>
+     </div>
+ </body>
+ 
+ <script>
+ 
+ 
+     document.addEventListener("DOMContentLoaded", function () {
+         var pdfImage = d3.select("#pdf-image");
+         var authorTitle = d3.select("#author-title");
+         var date = d3.select("#date");
+         var title = d3.select("#title");
+         var url = d3.select("#url");
+ 
+         function displayImage(author, titles) {
+             var imageUrl = "https://static.vecteezy.com/system/resources/previews/009/399/398/non_2x/old-vintage-book-clipart-design-illustration-free-png.png";
+             pdfImage.attr("src", imageUrl).style("display", "block");
+         }
+ 
+         var backButton = document.getElementById("backButton");
+ 
+         if (backButton) {
+             backButton.addEventListener("click", function () {
+                 window.location.href = 'home.html';
+             });
+         } else {
+             console.log("Button not found");
+         }      
+ 
+         var dataPath = "beeswarm_df.csv";
+         d3.csv(dataPath).then(function (mergedData) {
+             mergedData.forEach(function (d) {
+                 d.earliest_year = +d.earliest_year;
+                 d.latest_year = +d.latest_year;
+                 try {
+                 // Attempt to parse 'dates' as JSON
+                 d.dates = JSON.parse(d.dates.replace(/'/g, "\""));
+             } catch (error) {
+                 console.error("Error parsing 'dates' as JSON:", error);
+                 // Handle the error (e.g., set 'dates' to an empty array)
+                 d.dates = [];
+             }
+             });
+ 
+             mergedData.sort(function (a, b) {
+                 return a.earliest_year - b.earliest_year;
+             });
+ 
+             var tip = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function (d) {
+                    if (this.classList.contains('rect')) {
+                        return "<strong>Author:</strong> " + d.author + "<br>" +
+                            "<strong>Frequency:</strong> " + d.Frequency + "<br>";
+                    } else {
+                        var index = mergedData.findIndex(function (entry) {
+                            return entry.author === d.author && entry.dates.includes(d.year);
+                        });
+
+                        if (index !== -1 && mergedData[index].titles) {
+                            var titlesString = mergedData[index].titles.replace(/"""/g, '');
+                            var titlesString = mergedData[index].titles.replace(/'/g, '"');
+                            var titlesArray = JSON.parse(titlesString);
+                            var titleIndex = mergedData[index].dates.indexOf(d.year);
+                            var title = titlesArray[titleIndex];
+
+                            return "<strong>Author:</strong> " + d.author + "<br>" +
+                                "<strong>Year:</strong> " + d.year + "<br>" +
+                                "<strong>Title:</strong> " + title;
+                        } else {
+                            return "<strong>Author:</strong> " + d.author + "<br>" +
+                                "<strong>Year:</strong> " + d.year;
+                        }
+                    }
+                });
+            
+            var tipCircles = d3.tip()
+                .attr('class', 'd3-tip')
+                .offset([-10, 0])
+                .html(function (d) {
+                    var index = mergedData.findIndex(function (entry) {
+                            return entry.author === d.author && entry.dates.includes(d.year);
+                        });
+                    
+                    var titlesString = mergedData[index].titles.replace(/"""/g, '');
+                    var titlesString = mergedData[index].titles.replace(/'/g, '"');
+                    var titlesArray = JSON.parse(titlesString);
+                    var titleIndex = mergedData[index].dates.indexOf(d.year);
+                    var title = titlesArray[titleIndex];
+
+                    return "<strong>Author:</strong> " + d.author + "<br>" +
+                        "<strong>Year:</strong> " + d.year + "<br>" +
+                        "<strong>Title:</strong> " + (title || "N/A") + "<br>" +
+                        "<strong>Language:</strong> " + (d.language || "N/A");
+                });
+            
+            
+
+ 
+             var margin = { left: 100, top: 20, right: 20, bottom: 20 };
+             var svg = d3.select("#chart-svg")
+                 .attr("width", 1100)
+                 .attr("height", 15000);
+ 
+             var xScale = d3.scaleLinear()
+                 .domain([d3.min(mergedData, function (d) { return d.earliest_year; }),
+                     d3.max(mergedData, function (d) { return d.latest_year; })])
+                 .range([margin.left, svg.attr("width") - margin.right]);
+ 
+             // Creating color scale based on frequency
+             var colorScale = d3.scaleSequential(d3.interpolateGreens)
+                 .domain([0, d3.max(mergedData, function (d) { return +d.Frequency; })]);
+ 
+             var yScale = d3.scaleBand()
+                 .domain(mergedData.map(function (d) { return d.author; }))
+                 .range([margin.top, svg.attr("height") - margin.bottom])
+                 .padding(0);
+            
+                 // Extract unique languages from the data
+            var allLanguages = mergedData.flatMap(function (d) {
+                return d.languages ? JSON.parse(d.languages.replace(/'/g, '"')) : [];
+            });
+            var uniqueLanguages = [...new Set(allLanguages)];
+
+            // Create a color scale for languages
+            var languageColorScale = d3.scaleOrdinal()
+                .domain(uniqueLanguages)
+                .range(d3.schemeCategory10); // You can choose a different color scheme
+
+            // Create a legend for languages
+            var legendSvg = d3.select("#legend")
+                .attr("width", 300) // Adjust the width as needed
+                .attr("height", 180);
+
+            var legend = legendSvg.append("g")
+                .attr("class", "legend")
+                .attr("transform", "translate(0,0)");
+
+            // Calculate the number of columns and rows for the legend items
+            var numColumns = 3;
+            var numRows = Math.ceil(uniqueLanguages.length / numColumns);
+
+            uniqueLanguages.forEach(function (language, index) {
+                var col = index % numColumns;
+                var row = Math.floor(index / numColumns);
+
+                var legendItem = legend.append("g")
+                    .attr("class", "legend-item")
+                    .attr("transform", "translate(" + (col * 100) + "," + (row * 20) + ")"); // Adjust spacing
+
+                legendItem.append("rect")
+                    .attr("class", "legend-color")
+                    .attr("width", 15)
+                    .attr("height", 15)
+                    .style("fill", languageColorScale(language));
+
+                legendItem.append("text")
+                    .attr("class", "language-label")
+                    .attr("x", 20) // Adjust spacing
+                    .attr("y", 10) // Adjust spacing
+                    .text(language);
+            });
+
+
+ 
+             // Adding rectangles to represent Gantt bars
+             var bars = svg.selectAll("rect")
+                 .data(mergedData)
+                 .enter()
+                 .append("rect")
+                 .attr("class", "rect")
+                 .attr("opacity", 0.4)
+                 .attr("x", function (d) { return xScale(d.earliest_year); })
+                 .attr("y", function (d) { return yScale(d.author) +2; }) // Adjusted y-position
+                 .attr("width", function (d) {
+                     return Math.max(5, xScale(d.latest_year) - xScale(d.earliest_year));
+                 })
+                 .attr("height", 6)
+                 .attr("fill", function (d) { return colorScale(+d.Frequency); })
+                 .on('click', function (d) {
+                     showTitlesForAuthor(d.author);
+                 })
+                 .call(tip)
+                 .on('mouseover', tip.show)
+                 .on('mouseout', tip.hide);
+ 
+             // Adding creator name text
+             svg.selectAll(".creator-text")
+                 .data(mergedData)
+                 .enter()
+                 .append("text")
+                 .attr("class", "creator-text")
+                 .attr("x", function (d) { return xScale(d.earliest_year) - 15; }) // Adjusted x-position
+                 .attr("y", function (d) { return yScale(d.author) + 12; }) // Adjusted y-position
+                 .text(function (d) { return d.author; })
+                 .attr("text-anchor", "end")
+                 .attr("font-size", "12px")
+                 .attr("fill", "white"); 
+ 
+            
+ 
+             // Adding vertical grid lines
+             svg.selectAll(".vertical-grid-line")
+                 .data(xScale.ticks())
+                 .enter().append("line")
+                 .attr("class", "grid vertical")
+                 .attr("x1", function (d) { return xScale(d); })
+                 .attr("y1", margin.top)
+                 .attr("x2", function (d) { return xScale(d); })
+                 .attr("y2", mergedData.length * 30)
+                 .attr("stroke", "white"); 
+ 
+             var yScale = d3.scaleBand()
+                 .domain(mergedData.map(function (d) { return d.author; }))
+                 .range([margin.top, svg.attr("height") - margin.bottom])
+                 .padding(0);
+             
+             // Adding x-axis
+             var xAxis = d3.axisBottom(xScale);
+             svg.append("g")
+                 .attr("transform", "translate(0," + mergedData.length * 30 + ")")
+                 .call(xAxis);
+                 
+       
+ 
+ 
+             // Use forceSimulation to avoid overlap
+             var simulation = d3.forceSimulation()
+                 .force("x", d3.forceX(function (d) { return xScale(d.year); }))
+                 .force("y", d3.forceY(function (d) { return yScale(d.author) + yScale.bandwidth() / 2 -5; }))
+                 .force("collide", d3.forceCollide(5))
+                 .nodes(mergedData.flatMap(function (d) {
+                     if (Array.isArray(d.dates)) {
+                         return d.dates.map(function (year, index) {
+                             return {
+                                 author: d.author,
+                                 year: year,
+                                 frequency: d.Frequency,
+                                 color: colorScale(+d.Frequency),
+                                 Titles: d.titles, // Include Titles in the data
+                                 url: d.url, // Include URL in the data
+                                 language: d.languages ? JSON.parse(d.languages.replace(/'/g, '"'))[index] : null
+                             };
+                         });
+                     }
+                     return [];
+                 }))
+                 .on("tick", function () {
+                     circles
+                         .attr("cx", function (d) { return d.x; })
+                         .attr("cy", function (d) { return d.y; })
+                         .attr("fill", function (d) { return languageColorScale(d.language); });
+                 });
+ 
+             var circles = svg.selectAll("circle")
+                 .data(simulation.nodes())
+                 .enter()
+                 .append("circle")
+                 .attr("r", 5)
+                 .attr("fill", function (d) {
+                    return languageColorScale(d.language);
+                })
+                 .attr("opacity", 0.7)
+                 .attr("stroke", "black")
+                 .attr("stroke-width", 1)
+                 .on('mouseover', tipCircles.show)
+                 .on('mouseout', tipCircles.hide)
+                 .on('click', function (d) {
+                     showTitle(d.author, d.year);
+                     displayImage(d.author, d.titles);
+                 });
+ 
+             svg.call(tip);
+             svg.call(tipCircles);
+ 
+             // Modify the x-axis part
+             var xAxisBottom = d3.axisBottom(xScale);
+             d3.select("#xAxis")
+                 .attr("width", window.innerWidth )
+                 .attr("height", 50)
+                 .append("g")
+                 .attr("transform", "translate(0,0)")
+                 .call(xAxisBottom)
+                 .selectAll("text")
+                 .attr("transform", "translate(-10,0)rotate(-45)")
+                 .style("text-anchor", "end");
+ 
+             var xAxisFixed = d3.axisBottom(xScale);
+             d3.select("#xAxisFixed")
+                 .attr("width", window.innerWidth)
+                 .attr("height", 50)
+                 .append("g")
+                 .attr("transform", "translate(0,0)")
+                 .call(xAxisFixed)
+                 .selectAll("text")
+                 .attr("transform", "translate(-10,0)rotate(-45)")
+                 .style("text-anchor", "end");
+ 
+ 
+        function replaceQuotesInsideBrackets(inputString) {
+            var startIndex = inputString.indexOf('[');
+            var endIndex = inputString.lastIndexOf(']');
+            var contentInsideBrackets = inputString.slice(startIndex + 1, endIndex);
+            console.log(contentInsideBrackets);
+            var replacedContent = contentInsideBrackets.replace(/'/g, '"').replace(/"""/g, '\\"'); // Escape double quotes
+            var modifiedString = inputString.slice(0, startIndex + 1) + replacedContent + inputString.slice(endIndex);
+            return modifiedString;
+        }
+
+        
+
+ 
+        function showTitlesForAuthor(author) {
+            var titlesContainer = d3.select("#titles-container");
+            titlesContainer.selectAll(".title-box").remove();
+
+            var authorData = mergedData.find(function (entry) {
+                return entry.author === author;
+            });
+
+            if (authorData && authorData.titles) {
+                var titles;
+
+                if (typeof authorData.titles === 'string') {
+                    // Try to parse the titles string
+                    try {
+                        titles = JSON.parse(replaceQuotesInsideBrackets(authorData.titles));
+                    } catch (error) {
+                        console.error('Error parsing titles:', error);
+                        titles = [];
+                    }
+                } else if (Array.isArray(authorData.titles)) {
+                    titles = authorData.titles;
+                } else {
+                    titles = [];
+                }
+
+                if (Array.isArray(titles) && Array.isArray(authorData.dates)) {
+                    titles.forEach(function (title, index) {
+                        var year = authorData.dates[index];
+                        var language = authorData.languages ? JSON.parse(authorData.languages.replace(/'/g, '"'))[index] : null;
+
+                        titlesContainer.append("div")
+                            .attr("class", "title-box")
+                            .text("Author: " + author);
+
+                        titlesContainer.append("div")
+                            .attr("class", "title-box")
+                            .text("Year: " + year);
+
+                        titlesContainer.append("div")
+                            .attr("class", "title-box")
+                            .text("Title: " + title);
+
+                        titlesContainer.append("div")
+                            .attr("class", "title-box")
+                            .text("Language: " + (language || "N/A"));
+                    });
+
+                    titlesContainer.style("display", titlesContainer.selectAll(".title-box").size() > 0 ? "block" : "none");
+                }
+            }
+        }
+
+
+
+
+            function showTitle(author, year) {
+                var titlesContainer = d3.select("#titles-container");
+                titlesContainer.selectAll(".title-box").remove();
+
+                var index = mergedData.findIndex(function (entry) {
+                    return entry.author === author && entry.dates.includes(year);
+                });
+
+                if (index !== -1 && mergedData[index].titles) {
+                   var titlesString = mergedData[index].titles;
+                   titlesString = replaceQuotesInsideBrackets(titlesString);
+                   try {
+                       var titlesArray = JSON.parse(titlesString, function (key, value) {
+                           // Handle non-finite values (NaN, Infinity, -Infinity)
+                           return typeof value === 'number' && !isFinite(value) ? null : value;
+                       });
+
+                       if (Array.isArray(titlesArray)) {
+                           var titleIndex = mergedData[index].dates.indexOf(year);
+                           var title = titlesArray[titleIndex];
+
+                           titlesContainer.append("div")
+                               .attr("class", "title-box")
+                               .text("Author: " + author);
+
+                           titlesContainer.append("div")
+                               .attr("class", "title-box")
+                               .text("Year: " + year);
+
+                           titlesContainer.append("div")
+                               .attr("class", "title-box")
+                               .text("Title: " + title);
+                       } else {
+                           console.error('Invalid titles array:', titlesArray);
+                       }
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                        console.log('Titles string:', titlesString);
+                    }
+                }
+
+                titlesContainer.style("display", titlesContainer.selectAll(".title-box").size() > 0 ? "block" : "none");
+            }
+
+
+
+
+            
+ 
+         });
+     });
+ </script>
+ 
+ </html>
+ 
