@@ -202,51 +202,45 @@
         </div>
          <button id="backButton" onclick="goBack()">Home</button>
          
-          <svg id="line-svg" width="100%" height="5500"></svg>
+         <svg id="line-svg" width="100%" height="5500"></svg>
         
         <div id="overlay"></div>
      
          <script>
-             var decades; // Make decades a global variable
-             var descriptions; // Make descriptions a global variable
-             var overlayElement;
-             var selectedOption; 
-             var chartSvg = d3.select("#chart-svg");
-             console.log("Selected option:", selectedOption);
+            var decades; // Make decades a global variable
+            var descriptions; // Make descriptions a global variable
+            var overlayElement;
+            var selectedOption; 
+            var chartSvg = d3.select("#chart-svg");
+            console.log("Selected option:", selectedOption);
             
      
-             function goBack() {
-                 window.location.href = 'index.html';
-             }
+            function goBack() {
+                window.location.href = 'index.html';
+            }
      
-             function goTF() {
-                 window.location.href = 'tf_tech_cloud.html';
-             }
+            function goTF() {
+                window.location.href = 'tf_tech_cloud.html';
+            }
 
-             var sortSelect = document.getElementById("sort-select");
+            var sortSelect = document.getElementById("sort-select");
             var selectedOption = sortSelect.value;
             sortData(selectedOption);
 
             function sortData(selectedOption) {
                 console.log(selectedOption)
                 switch (selectedOption) {
-                    case "dateLowToHigh":
-                        mergedData.sort((a, b) => a.earliest_year - b.earliest_year);
+                    case "description":
+                        console.log("d")
                         break;
-                    case "dateHighToLow":
-                        mergedData.sort((a, b) => b.earliest_year - a.earliest_year);
+                    case "subject":
+                        console.log("s")
                         break;
-                    case "frequencyHighToLow":
-                        mergedData.sort((a, b) => a.earliest_year - b.earliest_year);
-                        mergedData.sort((a, b) => b.Frequency - a.Frequency);
+                    case "creator":
+                        console.log("c")
                         break;
-                    case "frequencyLowToHigh":
-                        mergedData.sort((a, b) => a.earliest_year - b.earliest_year);
-                        mergedData.sort((a, b) => a.Frequency - b.Frequency);
-                        break;
-                    case "alphabetically":
-                        mergedData.sort((a, b) => a.earliest_year - b.earliest_year);
-                        mergedData.sort((a, b) => a.author.localeCompare(b.author));
+                    case "titles":
+                        console.log("t")
                         break;
                     default:
                         break;
