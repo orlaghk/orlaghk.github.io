@@ -211,6 +211,7 @@
              var descriptions; // Make descriptions a global variable
              var overlayElement;
              var selectedOption; 
+             var chartSvg = d3.select("#chart-svg");
              console.log("Selected option:", selectedOption);
             
      
@@ -363,11 +364,6 @@
                 return description.replace(regex, match => `<span style="color: ${color};">${match}</span>`);
         
                 }
-        
-                
-        
-        
-            
                 // Function to parse the occurrences string into an array of integers
                 function parseOccurrences(occurrencesString) {
                 try {
