@@ -314,7 +314,14 @@
             backButton.addEventListener("click", function () {
                 window.location.href = 'index.html';
             });
-        }    
+        }
+        
+        var peopleButton = document.getElementById("peopleButton");
+        if (peopleButton) {
+            peopleButton.addEventListener("click", function () {
+                window.location.href = 'beeswarm_people.html';
+            });
+        } 
 
         var dataPath = "wiki_beeswarm.csv";
         d3.csv(dataPath).then(function (mergedData) {
