@@ -330,7 +330,7 @@
                 d.latest_year = +d.latest_year;
                 try {
                 // Attempt to parse 'dates' as JSON
-                d.dates = JSON.parse(d.dates.replace(/"/g, ""));
+                d.dates = JSON.parse(d.dates.replace.replace(/"/g, ""));
             } catch (error) {
                 console.error("Error parsing 'dates' as JSON:", error);
                 // Handle the error (e.g., set 'dates' to an empty array)
