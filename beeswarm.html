@@ -8,19 +8,23 @@
     <style>
         body {
             background-color: #6d6969;
-            color: white; /* Font color */
+            color: white; 
             font-family: sans-serif;
-            overflow-x: hidden; /* Prevent horizontal overflow */
+            overflow-x: hidden;
         }
 
         #chart-container {
             position: relative;
             display: flex;
             width: 100%;
+            margin-top: 50px;
+            z-index: 1;
         }
 
         #myDiv {
             flex: 0 0 70%;
+            background-color: #6d6969;
+            z-index: 1;
         }
 
         #titles-container {
@@ -35,9 +39,15 @@
             background-color: #6d6969;
         }
 
+       
+
         #sorting-container {
-            position: absolute;
-            left: 50px;
+            text-align: center;
+            position: fixed;
+            top: 100px;
+            left: 200px;
+            transform: translate(-50%, -50%);
+            z-index: 2; 
         }
 
         #author-title {
@@ -69,25 +79,29 @@
             top: 0;
             left: 0;
             z-index: 1;
-            
+        }
+
+        #xAxis{
+            display:none;
         }
 
         #xAxisContainer {
-                position: fixed;
-                bottom: 0;
-                left: 5;
-                background-color: #6d6969;
-                z-index: 1;
+            position: fixed;
+            bottom: 0;
+            left: 5;
+            background-color: #6d6969;
+            font-size:12;
+            z-index: 2;
         }
 
         .grid {
-            stroke: white; /* Font color for grid lines */
+            stroke: white; 
             stroke-opacity: 0.5;
             shape-rendering: crispEdges;
         }
 
         .grid.vertical {
-            stroke-dasharray: 2, 2; /* Dotted line for vertical grid lines */
+            stroke-dasharray: 2, 2;
         }
 
         .d3-tip {
@@ -101,14 +115,14 @@
 
         .title-box.hovered-title {
             background-color: rgba(144, 238, 144, 0.423); 
-            color: white;/* rgb(19, 103, 19);*/
+            color: white;
         }
 
         
 
         #backButton {
-            position: absolute;
-            top: 30px;
+            position: fixed;
+            top: 15px;
             right: 10px;
             padding: 10px;
             cursor: pointer;
@@ -122,7 +136,7 @@
         }
 
         #wikiButton {
-            position: absolute;
+            position: fixed;
             top: 90px;
             left: 500px;
             padding: 5px;
@@ -137,7 +151,7 @@
         }
 
         #peopleButton {
-            position: absolute;
+            position: fixed;
             top: 90px;
             left: 700px;
             padding: 5px;
@@ -152,9 +166,24 @@
         }
 
         #oxfordButton {
-            position: absolute;
+            position: fixed;
             top: 90px;
             left: 900px;
+            padding: 5px;
+            cursor: pointer;
+            background-color: #5bc072bc;
+            color: white;
+            z-index: 2;
+        
+            .active {
+            background-color: #808080;
+            }
+        }
+
+        #backToTopButton {
+            position: fixed;
+            bottom: 110px;
+            left: 60px;
             padding: 5px;
             cursor: pointer;
             background-color: #5bc072bc;
@@ -180,7 +209,7 @@
             border-radius: 10px;
             padding: 5px;
             position: fixed;
-            z-index: 1;
+            z-index: 2;
             top: 40px;
             left: 110px;
             transform: translateX(-50%);
@@ -202,7 +231,12 @@
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            z-index: 9999; 
+            z-index: 2;
+        }
+
+        #info-circle svg {
+            position: relative; 
+            z-index: 5; 
         }
 
         #info-circle::after {
@@ -233,11 +267,21 @@
 
         #chart-svg-container {
             margin-top: 50px; 
+            z-index: 1;
         }
+
 
         h2 {
             text-align: center;
+            position: fixed;
+            top: 5%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
         }
+
+        
+
 
 
 
@@ -251,8 +295,9 @@
     </div>    
     <button id="wikiButton">Wikipedia Dataset</button>
     <button id="oxfordButton">Oxford Dataset</button>
-    <button id="peopleButton">People Dataset</button>
+    <button id="peopleButton" onclick="changePage()">People Dataset</button>
     <button id="backButton">Home</button>
+    <button id="backToTopButton">Back To Top</button>
     <div id="overlay" class="overlay">
         <div id="overlay-close" class="overlay-close">X</div>
         <div id="overlay-creator"></div>
@@ -276,7 +321,7 @@
                 </select>
             </div>
             
-            <div id="chart-svg-container" style="margin-top: 50px;">
+            <div id="chart-svg-container">
                 <svg id="chart-svg" max-width="100%" height="6000"></svg>
                 <svg id="xAxis" width="60%" height="50"></svg>
             </div>
@@ -305,23 +350,36 @@
         var title = d3.select("#title");
         var url = d3.select("#url");
         var chartSvg = d3.select("#chart-svg");
-
+        var isOverlayOpen = false;
         var selectedOption; 
+
+        
+
+        
+        
         console.log("Selected option:", selectedOption);
             
         var backButton = document.getElementById("backButton");
+        var peopleButton= document.getElementById("peopleButton");
         if (backButton) {
             backButton.addEventListener("click", function () {
-                window.location.href = 'index.html';
+                window.location.href = 'home.html';
             });
-        }
-        
-        var peopleButton = document.getElementById("peopleButton");
+        }   
         if (peopleButton) {
             peopleButton.addEventListener("click", function () {
-                window.location.href = 'beeswarm_people.html';
+                window.location.href = 'peoples-beeswarm.html';
             });
-        } 
+        }    
+        var backToTopButton= document.getElementById("backToTopButton");
+        if (backToTopButton) {
+            backToTopButton.addEventListener("click", function () {
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            });
+        }    
 
         var dataPath = "wiki_beeswarm.csv";
         d3.csv(dataPath).then(function (mergedData) {
@@ -360,8 +418,11 @@
                         mergedData.sort((a, b) => a.Frequency - b.Frequency);
                         break;
                     case "alphabetically":
-                        mergedData.sort((a, b) => a.earliest_year - b.earliest_year);
-                        mergedData.sort((a, b) => a.author.localeCompare(b.author));
+                        mergedData.sort((a, b) => {
+                            const lastNameA = a.author.split(" ").slice(-1)[0]; // Get last word of surname
+                            const lastNameB = b.author.split(" ").slice(-1)[0]; // Get last word of surname
+                            return lastNameA.localeCompare(lastNameB); // Compare last word of surnames
+                        });
                         break;
                     default:
                         break;
@@ -418,8 +479,18 @@
                     .range([margin.left, svg.attr("width") - margin.right]);
 
                 // Creating color scale based on frequency
-                var colorScale = d3.scaleSequential(d3.interpolateGreens)
+                var colorScale = d3.scaleSequential(d3.interpolateBlues)
                     .domain([0, d3.max(mergedData, function (d) { return +d.Frequency; })]);
+
+                // Create a log scale with a minimum value of 1
+                var logScale = d3.scaleLog().domain([1, d3.max(mergedData, function (d) { return +d.Frequency; })]);
+                var colorScale = d3.scaleSequential(d3.interpolateBlues);
+                // Define the data range for the color and log scales
+                var frequencyValues = mergedData.map(function (d) { return +d.Frequency; });
+            
+                var combinedScale = function(d) {
+                    return colorScale(logScale(d));
+                };
 
                 var yScale = d3.scaleBand()
                     .domain(mergedData.map(function (d) { return d.author; }))
@@ -439,9 +510,10 @@
                         return Math.max(5, xScale(d.latest_year) - xScale(d.earliest_year));
                     })
                     .attr("height", 6)
-                    .attr("fill", function (d) { return colorScale(+d.Frequency); })
+                    .attr("fill", function (d) { return combinedScale(+d.Frequency); })
                     .call(tip)
                     .on('mouseover', function (d) {
+                        if (isOverlayOpen) return;
                         showTitlesForAuthor(d.author);
                     })
 
@@ -458,6 +530,7 @@
                     .attr("font-size", "12px")
                     .attr("fill", "white")
                     .on('mouseover', function (d) {
+                        if (isOverlayOpen) return;
                         showTitlesForAuthor(d.author);
                     }); 
 
@@ -495,7 +568,7 @@
                                     author: d.author,
                                     year: year,
                                     frequency: d.Frequency,
-                                    color: colorScale(+d.Frequency),
+                                    color: combinedScale(+d.Frequency),
                                     Titles: d.titles, // Include Titles in the data
                                     urls: d.urls, // Include URL in the data
                                     creators : d.creator,
@@ -514,27 +587,70 @@
                             .attr("fill", function (d) { return d.color; });
                     });
 
-                var circles = svg.selectAll("circle")
-                    .data(simulation.nodes())
-                    .enter()
-                    .append("circle")
-                    .attr("r", 5)
-                    .attr("fill", function (d) { return d.color; }) 
-                    //.attr("opacity", 0.7)
-                    .attr("stroke", "black")
-                    .attr("stroke-width", 1)
-                    .on('mouseover', function (d) {
-                        hoverCircleHighlight(d.author, d.year);
-                    })
-                    .on('mouseout', function (d) {
-                        removeCircleHighlight(d.author, d.year);
-                    });
+                    var circles = svg.selectAll("circle")
+                        .data(simulation.nodes())
+                        .enter()
+                        .append("circle")
+                        .attr("r", 5)
+                        .attr("fill", function (d) { return d.color; }) 
+                        .attr("stroke", "black")
+                        .attr("stroke-width", 1)
+                        .on('mouseover', function (d) {
+                            if (isOverlayOpen) return;
+                            var xPos = xScale(d.year);
+                            var yPos = yScale(d.author) + yScale.bandwidth() / 2 - 5;
+                            
+                            // Append the line
+                            svg.append("line")
+                                .attr("class", "hover-line")
+                                .attr("x1", xPos)
+                                .attr("y1", yPos)
+                                .attr("x2", xPos)
+                                .attr("y2", mergedData.length * 30)
+                                .attr("stroke", "lightgreen") // Light pink color
+                                .attr("stroke-width", 2) // Thicker line
+                                .attr("stroke-dasharray", "5,5");
+
+                            // Append the year on fixed x-axis
+                            d3.select("#xAxisFixed")
+                                .append("text")
+                                .attr("class", "hover-year")
+                                .attr("x", xPos)
+                                .attr("y", 35)
+                                .style("fill", "lightgreen") // Light pink color for font
+                                .attr("text-anchor", "middle")
+                                .text(d.year);
+                            
+                            // Store the line element as a property of the circle
+                            d3.select(this).datum().line = svg.select(".hover-line");
+
+                            hoverCircleHighlight(d.author, d.year);
+                        })
+
+                        .on('mouseout', function () {
+                            if (isOverlayOpen) return;
+                            // Remove the line on mouseout
+                            d3.select(this).datum().line.remove();
+                        
+
+                            // Remove the year text from the fixed x-axis
+                            d3.select("#xAxisFixed").select(".hover-year").remove();
+
+                            var author = d3.select(this).datum().author;
+                            var year = d3.select(this).datum().year;
+                            removeCircleHighlight(author, year);
+                        })
+                        .on('mousedown', function(d){
+                            if (isOverlayOpen) return;
+                            helperOverlay(d.author, d.year);
+                        });
 
 
                 svg.call(tip);
 
                 // Modify the x-axis part
-                var xAxisBottom = d3.axisBottom(xScale);
+                var xAxisBottom = d3.axisBottom(xScale)
+                    .tickFormat(d3.format("d"));;
                 d3.select("#xAxis")
                     .attr("width", window.innerWidth )
                     .attr("height", 50)
@@ -542,10 +658,12 @@
                     .attr("transform", "translate(0,0)")
                     .call(xAxisBottom)
                     .selectAll("text")
+                    .style("font-size", "14px")
                     .attr("transform", "translate(-10,0)rotate(-45)")
                     .style("text-anchor", "end");
 
-                var xAxisFixed = d3.axisBottom(xScale);
+                var xAxisFixed = d3.axisBottom(xScale)
+                    .tickFormat(d3.format("d"));;
                 d3.select("#xAxisFixed")
                     .attr("width", window.innerWidth)
                     .attr("height", 50)
@@ -553,8 +671,9 @@
                     .attr("transform", "translate(0,0)")
                     .call(xAxisFixed)
                     .selectAll("text")
-                    .attr("transform", "translate(-10,0)rotate(-45)")
-                    .style("text-anchor", "end");
+                    .style("font-size", "14px")
+                    .style("text-anchor", "middle");
+                
                 
 
             function replaceQuotesInsideBrackets(inputString) { 
@@ -658,6 +777,84 @@
                 }
             }
 
+            function helperOverlay(author, thisyear){
+                var titlesContainer = d3.select("#titles-container");
+
+                svg.selectAll(".creator-text")
+                .attr("fill", "white")
+                    .attr("font-size", "12px")
+                    .filter(function (d) {
+                        return d.author === author;
+                    })
+                    .attr("font-size", "18px")
+                    .attr("fill", "lightgreen");
+
+                var authorData = mergedData.find(function (entry) {
+                    return entry.author === author;
+                });
+
+                if (authorData && authorData.titles) {
+                    var titles;
+
+                    if (typeof authorData.titles === 'string') {
+                        // Try to parse the titles string
+                        try {
+                            titles = JSON.parse(replaceQuotesInsideBrackets(authorData.titles));
+                        } catch (error) {
+                            console.error('Error parsing titles:', error);
+                            titles = [];
+                        }
+                    } else if (Array.isArray(authorData.titles)) {
+                        titles = authorData.titles;
+                        
+                    } else {
+                        console.log(titles)
+                        titles = [];
+                    }
+
+                    if (Array.isArray(titles) && Array.isArray(authorData.dates)) {
+                        // Create an array of objects with year and title properties
+                        var titlesWithYears = titles.map(function (title, index) {
+                            return {
+                                year: authorData.dates[index],
+                                i: index,
+                                title: title
+                            };
+                        });
+
+                        // Sort the titles based on the years in ascending order
+                        titlesWithYears.sort(function (a, b) {
+                            return a.year - b.year;
+                        });
+
+                        // Iterate through the sorted titles to display them
+                        titlesWithYears.forEach(function (titleObj) {
+                            var year = titleObj.year;
+                            var title = titleObj.title;
+                            var highlight = year === thisyear;
+                            title = title.replace("['", "").replace("']", "")
+                            // Extract the URLs from the string representation
+                            var urlsString = authorData.urls;
+
+                            // Remove leading and trailing square brackets and single quotes
+                            urlsString = urlsString.replace(/^\[|\]$/g, '').replace(/'/g, '');
+
+                            // Split the string by comma and trim each URL
+                            var urlsArray = urlsString.split(',').map(function(url) {
+                                return url.trim();
+                            });
+
+                            var url = urlsArray[titleObj.i]
+
+
+
+                            displayOverlay(author, year, title, url, titleObj.i);
+
+                        });
+                    }
+                }
+            }
+
             function hoverCircleHighlight(author, thisyear) {
                 var titlesContainer = d3.select("#titles-container");
                 titlesContainer.selectAll(".title-box").remove();
@@ -714,7 +911,7 @@
                             var year = titleObj.year;
                             var title = titleObj.title;
                             var highlight = year === thisyear;
-
+                            title = title.replace("['", "").replace("']", "")
                             // Extract the URLs from the string representation
                             var urlsString = authorData.urls;
 
@@ -779,6 +976,7 @@
                         .style("margin", "5px")
                         .style("padding", "10px")
                         .on('mouseover', function () {
+                            if (isOverlayOpen) return;
                             d3.select(this).classed("hovered-title", true);
                             d3.selectAll("circle")
                                 .filter(function (d) {
@@ -788,15 +986,29 @@
                                 .attr("r", highlight ? 10 : 10);
                         })
                         .on('mouseout', function () {
+                            if (isOverlayOpen) return;
                             removeCircleHighlight(author, year);
                         })
                         .classed("hovered-title", highlight)
                         .on('mousedown', function(){
                             displayOverlay(author, year, title, url, index);
                         });
-                    titleBox.append("div")
-                        .text("Author: " + author + "\n\n")
-                        .style("font-weight", "bold");
+                    var authorData = mergedData.find(function (entry) {
+                        return entry.author === author;
+                    });
+                    var creatorString = cleanUpString(authorData.creator);
+                    var creatorArray = parseCreatorString(authorData.creator);
+                    var creator = creatorArray[index] || '';
+                    if (creator===''){
+                        titleBox.append("div")
+                            .text("Author: " + author + "\n\n")
+                            .style("font-weight", "bold");
+                    }
+                    else{
+                        titleBox.append("div")
+                            .text("Author: " + creator + "\n\n")
+                            .style("font-weight", "bold");
+                    }
                     
                     titleBox.append("img")
                         .attr("src", url)
@@ -833,20 +1045,43 @@
             var overlayClose = d3.select("#overlay-close");
 
             overlayClose.on("click", function () {
+                isOverlayOpen = false;
+                d3.selectAll("circle")
+                    .transition()
+                    .attr("r", 5);
+                d3.selectAll(".title-box").classed("hovered-title", false);
+                d3.selectAll(".hover-line").remove();
+                d3.select("#xAxisFixed").selectAll(".hover-year").remove();
                 overlay.style("display", "none");
             });
 
-            function displayOverlay(author, year, title, url, index) {
+            var cleanUpString = function(str) {
+                return str.replace(/^\[|\]$/g, '').replace(/'/g, '');
+            };
 
-                console.log(author, year, title, url, index)
+            function parseCreatorString(creatorString) {
+                // console.log(creatorString)
+                // Remove leading and trailing quotation marks and brackets
+                creatorString = creatorString.replace(/^"?\[?'?|'?"?\]?'?$/g, '');
+                // Split the string into individual creator strings
+                var creators = creatorString.split(/', '\b/);
+                // If there's only one creator, it might not have commas within the name
+                // so we don't need further processing
+                if (creators.length === 1) {
+                    return creators;
+            }
+            // For creators with commas within the name, we need to join them back together
+            return creators.map(creator => creator.replace(/^'|'$/g, ''));
+            }
+
+            
+            
+            function displayOverlay(author, year, title, url, index) {
+                isOverlayOpen = true;
+                
                 var authorData = mergedData.find(function (entry) {
                     return entry.author === author;
                 });
-
-
-                var cleanUpString = function(str) {
-                    return str.replace(/^\[|\]$/g, '').replace(/'/g, '');
-                };
 
                 var parseArrayString = function(str) {
                     return str.split(',').map(function(item) {
@@ -854,23 +1089,7 @@
                     });
                 };
 
-                function parseCreatorString(creatorString) {
-
-                    console.log(creatorString)
-                    // Remove leading and trailing quotation marks and brackets
-                    creatorString = creatorString.replace(/^"?\[?'?|'?"?\]?'?$/g, '');
-                    // Split the string into individual creator strings
-                    var creators = creatorString.split(/', '\b/);
-                    // If there's only one creator, it might not have commas within the name
-                    // so we don't need further processing
-                    if (creators.length === 1) {
-                        return creators;
-                    }
-                    // For creators with commas within the name, we need to join them back together
-                    return creators.map(creator => creator.replace(/^'|'$/g, ''));
-                }
-
-
+            
                 var creatorString = cleanUpString(authorData.creator);
                 var creatorArray = parseCreatorString(authorData.creator);
                 var creator = creatorArray[index] || '';
@@ -888,7 +1107,7 @@
                 var language = languageArray[index] || '';
 
 
-                d3.select("#overlay-creator").text("Creator:  " + creator);
+                d3.select("#overlay-creator").text("Author:  " + creator);
                 d3.select("#overlay-pdf-image").attr("src", url);
                 d3.select("#overlay-date").text("Date: " + year);
                 d3.select("#overlay-title").text("Title: " + title);
@@ -911,9 +1130,6 @@
             
             }
 
-                
-            
-
             function isValidJSON(str) {
                 try {
                     JSON.parse(str);
@@ -923,9 +1139,7 @@
                     return false;
                 }
             }
-        
-            
-            console.log(selectedOption)
+
             }
 
             // Add event listener for change event on sort-select
