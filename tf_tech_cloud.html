@@ -561,9 +561,9 @@
                 else{
                     var filepath = "cleaned_author_df.csv";
                 }
-                var filepath = "cleaned_df copy.csv";
+                // var filepath = "cleaned_df copy.csv";
                  // Assuming cleaned_author_df.csv is loaded separately
-                 d3.csv( "cleaned_df copy.csv").then(function (authorData) {
+                 d3.csv(filepath).then(function (authorData) {
                    // Initialize an array to store occurrence details
                    var occurrenceDetails = [];
    
