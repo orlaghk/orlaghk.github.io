@@ -73,11 +73,12 @@
         #backButton {
             position: fixed;
             top: 10px;
-            right: 10px;
+            left: 10px;
             padding: 10px;
             cursor: pointer;
             background-color: #808080;
             color: white;
+            z-index:4;
         }
 
         #tf-button {
@@ -88,6 +89,7 @@
             cursor: pointer;
             background-color: #808080;
             color: white;
+            z-index:4;
         }
 
         #overlay {
@@ -95,112 +97,103 @@
             height: 85%;
             overflow-x: none;
             overflow-y: auto;
-            max-width: 330px;
+            width: 330px;
             background-color: rgba(0, 0, 0, 0.8);
             color: white;
             padding: 10px;
             display: none;
-            font-size: 12px;
-            margin-top: 85px
-        }
-
-        .occurrence-square div:nth-child(1),
-        .occurrence-square div:nth-child(2) {
-            font-weight: bold;
+            font-size: 14px;
+            margin-top: 85px;
         }
 
         .column-tooltip {
-           position: fixed;
-           display: none;
-           top:30x;
-           background-color: #808080;
-           color: #deb5e5;
-           text-align: center;
-           border-radius: 10px;
-           padding: 5px;
-           z-index: 1;
-           font-size: 10;
-       }
+            position: fixed;
+            display: none;
+            right: 38%;
+            top: 90px;
+            background-color: #e1dede;
+            color: #322f33;
+            text-align: center;
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 4;
+            font-size: 14px;
+        }
 
-       th:hover .column-tooltip {
-           display: block;
-       }
+        th:hover .column-tooltip {
+            display: block;
+        }
 
-       .column-tooltip {
-           position: fixed;
-           display: none;
-           left: 38%;
-           top: 90px;
-           background-color: #e1dede;
-           color: #322f33;
-           text-align: center;
-           border-radius: 10px;
-           padding: 10px;
-           z-index: 1;
-           font-size: 14px;
-       }
+        .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        background-color: #333;
+        color: white;
+        text-align: center;
+        border-radius: 10px;
+        padding: 5px;
+        position: fixed;
+        z-index: 4;
+        top: 40px;
+        right: 1px;
+        }
 
-       th:hover .column-tooltip {
-           display: block;
-       }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
 
-       .tooltip .tooltiptext {
-       visibility: hidden;
-       width: 200px;
-       background-color: #333;
-       color: white;
-       text-align: center;
-       border-radius: 10px;
-       padding: 5px;
-       position: fixed;
-       z-index: 1;
-       top: 40px;
-       left: 110px;
-       transform: translateX(-50%);
-       }
+        #info-circle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            background-color: #ccc;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 4; 
+        }
 
-       .tooltip:hover .tooltiptext {
-           visibility: visible;
-       }
+        #info-circle::after {
+            content: "i";
+            font-size: 20px;
+        }
 
-       #info-circle {
-           position: fixed;
-           top: 10px;
-           left: 10px;
-           width: 30px;
-           height: 30px;
-           background-color: #ccc;
-           border-radius: 50%;
-           display: flex;
-           justify-content: center;
-           align-items: center;
-           cursor: pointer;
-           z-index: 9999; 
-       }
+        #sorting-container {
+            text-align: center;
+            position: fixed;
+            top: 30px;
+            left: 48%;
+            transform: translate(-50%, -50%);
+            z-index: 4; 
+        }
 
-       #info-circle::after {
-           content: "i";
-           font-size: 20px;
-       }
+        #backButton:hover, #tf-button:hover {
+            background-color: #deb5e5; 
+        }
 
-       #sorting-container {
-          text-align: center;
-          position: fixed;
-          top: 30px;
-          left: 48%;
-          transform: translate(-50%, -50%);
-          z-index: 9999; 
-      }
+        .grey-rectangle {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 50px; /* Adjust this value as needed */
+                background-color: #454141;
+                z-index: 2;
+            }
 
     </style>
 
 </head>
 
 <body>
-   <div class="tooltip">
-       <span id="info-circle"></span>
-       <span class="tooltiptext">Hover over a word to find other time periods where it is featured! Click on a word to vie some of the records it is in.</span>
-   </div>  
+<div class="tooltip">
+    <span id="info-circle"></span>
+    <span class="tooltiptext">Hover over a word to find other time periods where it is featured! Click on a word to vie some of the records it is in.</span>
+</div>  
     <button id="tf-button" onclick="goTF()">Go to TFIDF</button>
     <div id="sorting-container">
         <label for="sort-select">The
@@ -210,57 +203,56 @@
             </span>
             of the
         </label>
-       <select id="sort-select">
-           <option value="description" selected>description</option>
-           <option value="subject">subject</option>
-           <option value="creator">creator</option>
-           <option value="title">title</option>
-       </select>
-       <label for="sort-select">column</label>
-   </div>
-    <button id="backButton" onclick="goBack()">Home</button>
-    
-    <svg id="line-svg" width="100%" height="5500"></svg>
-   
-   <div id="overlay"></div>
+    <select id="sort-select">
+        <option value="description" selected>description</option>
+        <option value="subject">subject</option>
+        <option value="creator">creator</option>
+        <option value="title">title</option>
+    </select>
+    <label for="sort-select">column</label>
+</div>
+<div class="grey-rectangle"></div>
+<button id="backButton" onclick="goBack()">Home</button>
+<svg id="line-svg" width="100%" height="5500"></svg>
+<div id="overlay"></div>
 
     <script>
-       var decades; 
-       var descriptions; 
-       var overlayElement;
-       var selectedOption; 
-       var chartSvg = d3.select("#line-svg");
+    var decades; 
+    var descriptions; 
+    var overlayElement;
+    var selectedOption; 
+    var chartSvg = d3.select("#line-svg");
 
-       console.log("Selected option:", selectedOption);
-       
+    //console.log("Selected option:", selectedOption);
+    
 
-       function goBack() {
-           window.location.href = 'home.html';
-       }
+    function goBack() {
+        window.location.href = 'home.html';
+    }
 
-       function goTF() {
-           window.location.href = 'tech_cloud.html';
-       }
+    function goTF() {
+        window.location.href = 'tech_cloud.html';
+    }
 
-       var sortSelect = document.getElementById("sort-select");
-       var selectedOption = sortSelect.value;
-       sortData(selectedOption);
+    var sortSelect = document.getElementById("sort-select");
+    var selectedOption = sortSelect.value;
+    sortData(selectedOption);
 
-       function sortData(selectedOption) {
-           console.log(selectedOption)
-           switch (selectedOption) {
+    function sortData(selectedOption) {
+        //console.log(selectedOption)
+        switch (selectedOption) {
             case "description":
                 file = "tf_fraction_by_decade_with_occurrences.csv"
                 refined_by = "description"
-                console.log("d")
+                //console.log("d")
                 break;
             case "subject":
-                console.log("s")
+                //console.log("s")
                 file = "retry_subject_tf_fraction_by_decade_with_occurrences.csv"
                 refined_by = "subject"
                 break;
             case "creator":
-                console.log("c")
+                //console.log("c")
                 file = "retry_creator_tf_fraction_by_decade_with_occurrences.csv"
                 refined_by = "creator"
                 break;
@@ -271,210 +263,222 @@
             default:
                 break;
         }
-           updateVisualization();
-       }
+        updateVisualization();
+    }
 
-       function showOverlay(selectedDecade, word, tfInfo, occurrences) {
-          overlayElement = document.getElementById("overlay");
-          // Clear the overlay before appending new details
-          overlayElement.innerHTML = '';
+    function showOverlay(selectedDecade, word, tfInfo, occurrences) {
+        overlayElement = document.getElementById("overlay");
+        // Clear the overlay before appending new details
+        overlayElement.innerHTML = '';
 
-          // Display word and decade at the top
-          var header = document.createElement("div");
-          header.className = "overlay-header";
-          header.innerHTML = '<div>Word: ' + word + '</div><div>Decade: ' + selectedDecade + '</div>';
-          overlayElement.appendChild(header);
-          
-          // Fetch details for the highlighted word
-          fetchDetails(word, occurrences);
+        // Display word and decade at the top
+        var header = document.createElement("div");
+        header.className = "overlay-header";
+        header.innerHTML = '<div>Word: ' + word + '</div><div>Decade: ' + selectedDecade + '</div>';
+        overlayElement.appendChild(header);
+        
+        // Fetch details for the highlighted word
+        fetchDetails(word, occurrences);
 
-          // Get the position of the clicked word
-          var cellRect = document.querySelector(".matching-word").getBoundingClientRect();
+        // Get the position of the clicked word
+        var cellRect = document.querySelector(".matching-word").getBoundingClientRect();
 
-          // Calculate the space available both below and above
-          var spaceBelow = window.innerHeight - cellRect.bottom;
-          var spaceAbove = cellRect.top;
+        // Calculate the space available both below and above
+        var spaceBelow = window.innerHeight - cellRect.bottom;
+        var spaceAbove = cellRect.top;
 
-          // Check if there is more space below or above and adjust the overlay position accordingly
-          if (spaceBelow >= spaceAbove) {
-              overlayElement.style.top = (10) + "px";
-              overlayElement.style.bottom = ""; // Remove the bottom property
-          } else {
-              overlayElement.style.bottom = 10 + "px";
-              overlayElement.style.top = ""; // Remove the top property
-          }
+        // Check if there is more space below or above and adjust the overlay position accordingly
+        if (spaceBelow >= spaceAbove) {
+            overlayElement.style.top = (10) + "px";
+            overlayElement.style.bottom = ""; // Remove the bottom property
+        } else {
+            overlayElement.style.bottom = 10 + "px";
+            overlayElement.style.top = ""; // Remove the top property
+        }
 
-          // Set the left or right property based on available space
-          if (cellRect.left < window.innerWidth / 2) {
-              overlayElement.style.right = 10 + "px";
-              overlayElement.style.left = ""; // Remove the right property
-          } else {
-              overlayElement.style.left = 10 + "px";
-              overlayElement.style.right = ""; // Remove the left property
-          }
+        // Set the left or right property based on available space
+        if (cellRect.left < window.innerWidth / 2) {
+            overlayElement.style.right = 10 + "px";
+            overlayElement.style.left = ""; // Remove the right property
+        } else {
+            overlayElement.style.left = 10 + "px";
+            overlayElement.style.right = ""; // Remove the left property
+        }
 
-          overlayElement.style.display = "block";
-      }
+        overlayElement.style.display = "block";
+    }
 
-      // Function to fetch details for the highlighted word
-      function fetchDetails(word, occurrences) {
-            if (refined_by === 'creator' || refined_by === 'subject') {
-                var filepath = "cleaned_df.csv";
-            }
-            else{
-                var filepath = "cleaned_author_df.csv";
-            }
-            // var filepath = "cleaned_df copy.csv";
-             // Assuming cleaned_author_df.csv is loaded separately
-             d3.csv(filepath).then(function (authorData) {
-              // Initialize an array to store occurrence details
-              var occurrenceDetails = [];
+    var csvData;
+    d3.csv("finalATTEMPT2.csv").then(function(data) {
+        csvData = data; 
+    });
 
-              // Loop through occurrences to get corresponding details
-              occurrences.forEach(function (occurrence) {
-                  // Assuming the 'occurrence' field in tf_stemmed_by_decade_with_occurrences.csv
-                  // is an array of indices corresponding to rows in cleaned_author_df.csv
-                  var rowIndex = parseInt(occurrence);
+    function findURL(rowIndex) {
+        // Retrieve the URL directly from the pre-loaded CSV data
+        var dataRow = csvData[rowIndex];
+        return dataRow['url'];
+    }
 
-                  // Check if the rowIndex is a valid index in the author data
-                  if (!isNaN(rowIndex) && rowIndex >= 0 && rowIndex < authorData.length) {
-                      // Push occurrence details to the array
-                      var details = authorData[rowIndex];
-                      occurrenceDetails.push(details);
-                  }
-              });
+    function fetchDetails(word, occurrences) {
+        var filepath = "finalATTEMPT1.csv";
+        d3.csv(filepath).then(function (authorData) {
+            // Initialize an array to store occurrence details
+            var occurrenceDetails = [];
 
-              // Order occurrence details by year
-              occurrenceDetails.sort(function (a, b) {
-                  return a.date - b.date;
-              });
+            // Loop through occurrences to get corresponding details
+            occurrences.forEach(function (occurrence) {
+                // Assuming the 'occurrence' field in tfidf_stemmed_by_decade_with_occurrences.csv
+                // is an array of indices corresponding to rows in cleaned_author_df.csv
+                var rowIndex = parseInt(occurrence);
 
-              // Display occurrence details in the overlay
-              var detailsContainer = document.createElement("div");
-              detailsContainer.className = "occurrence-details";
-              detailsContainer.style.display = "flex";
-              detailsContainer.style.flexWrap = "wrap";
-              detailsContainer.style.overflowY = "auto";
+                // Check if the rowIndex is a valid index in the author data
+                if (!isNaN(rowIndex) && rowIndex >= 0 && rowIndex < authorData.length) {
+                    // Push occurrence details to the array
+                    var details = authorData[rowIndex];
+                    details['url'] = findURL(rowIndex);
+                    // console.log(details['url']);
+                    occurrenceDetails.push(details);
+                }
+            });
 
-              occurrenceDetails.forEach(function (details) {
-                  var detailsSquare = document.createElement("div");
-                  detailsSquare.className = "occurrence-square";
-                  detailsSquare.style.flex = "0 0 300px";
-                  detailsSquare.style.whiteSpace = "normal";
+            // Order occurrence details by year
+            occurrenceDetails.sort(function (a, b) {
+                return a.date - b.date;
+            });
 
-                  if (refined_by === 'title') {
-                    detailsSquare.innerHTML += '<div>Title: ' + highlightMatchingWords(details.title, word, "#d773e8") + '</div>';
-                    detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
+            // Display occurrence details in the overlay
+            var detailsContainer = document.createElement("div");
+            detailsContainer.className = "occurrence-details";
+            detailsContainer.style.display = "flex";
+            detailsContainer.style.flexWrap = "wrap";
+            detailsContainer.style.overflowY = "auto";
+
+            occurrenceDetails.forEach(function (details) {
+                var detailsSquare = document.createElement("div");
+                detailsSquare.className = "occurrence-square";
+                detailsSquare.style.flex = "0 0 300px";
+                detailsSquare.style.whiteSpace = "normal";
+
+                var url = details['url'];
+                var img = document.createElement('img');
+                img.src = url;
+                img.style.maxWidth = '50%';
+                img.style.height = 'auto'; 
+                img.style.display = 'block';
+                img.style.margin = '0 auto';
+
+
+                if (refined_by === 'title') {
+                    detailsSquare.innerHTML += '<div style="color: #ead4ee">Title: ' + highlightMatchingWords(details.title, word, "#d773e8") + '</div>';
+                    detailsSquare.appendChild(img);
                     detailsSquare.innerHTML += '<div>Creator: ' + details.creator + '</div>';
                     detailsSquare.innerHTML += '<div>Subject: ' + details.subject + '</div>';
+                    detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
                     detailsSquare.innerHTML += '<div>Description: ' + details.description + '</div>';
-                  }
+                }
+
+                if (refined_by === 'creator') {
+                    detailsSquare.innerHTML += '<div>Title: ' + details.title + '</div>';
+                    detailsSquare.appendChild(img);
+                    detailsSquare.innerHTML += '<div style="color: #ead4ee">Creator: ' + highlightMatchingWords(details.creator, word, "#d773e8") + '</div>';
+                    detailsSquare.innerHTML += '<div>Subject: ' + details.subject + '</div>';
+                    detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
+                    detailsSquare.innerHTML += '<div>Description: ' + details.description + '</div>';
+                }
+
+                if (refined_by === 'subject') {
+                    detailsSquare.innerHTML += '<div>Title: ' + details.title + '</div>';
+                    detailsSquare.appendChild(img);
+                    detailsSquare.innerHTML += '<div>Creator: ' + details.creator + '</div>';
+                    detailsSquare.innerHTML += '<div style="color: #ead4ee">Subject: ' + highlightMatchingWords(details.subject, word, "#d773e8") + '</div>';
+                    detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
+                    detailsSquare.innerHTML += '<div>Description: ' + details.description + '</div>';
+                }
+
+                if (refined_by === 'description') {
+                    detailsSquare.innerHTML += '<div>Title: ' + details.title + '</div>';
+                    detailsSquare.appendChild(img);
+                    detailsSquare.innerHTML += '<div>Creator: ' + details.creator + '</div>';
+                    detailsSquare.innerHTML += '<div>Subject: ' + details.subject + '</div>';
+                    detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
+                    detailsSquare.innerHTML += '<div style="color: #ead4ee">Description: ' + highlightMatchingWords(details.description, word, "#d773e8") + '</div>';
+                }
+                detailsContainer.appendChild(detailsSquare);
+
                 
+            });
 
-                  if (refined_by === 'creator') {
-                      detailsSquare.innerHTML += '<div>Title: ' + details.title + '</div>';
-                      detailsSquare.innerHTML += '<div>Creator: ' + highlightMatchingWords(details.creator, word, "#d773e8") + '</div>';
-                      detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
-                      detailsSquare.innerHTML += '<div>Subject: ' + details.subject + '</div>';
-                      detailsSquare.innerHTML += '<div>Description: ' + details.description + '</div>';
-                  }
+            overlayElement.appendChild(detailsContainer);
+        });
+    } 
 
-                  if (refined_by === 'subject') {
-                      detailsSquare.innerHTML += '<div>Title: ' + details.title + '</div>';
-                      detailsSquare.innerHTML += '<div>Creator: ' + details.creator + '</div>';
-                      detailsSquare.innerHTML += '<div>Subject: ' + highlightMatchingWords(details.subject, word, "#d773e8") + '</div>';
-                      detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
-                      detailsSquare.innerHTML += '<div>Description: ' + details.description + '</div>';
-                  }
 
-                  if (refined_by === 'description') {
-                      detailsSquare.innerHTML += '<div>Title: ' + details.title + '</div>';
-                      detailsSquare.innerHTML += '<div>Creator: ' + details.creator + '</div>';
-                      detailsSquare.innerHTML += '<div>Description: ' + highlightMatchingWords(details.description, word, "#d773e8") + '</div>';
-                      detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
-                      detailsSquare.innerHTML += '<div>Subject: ' + details.subject + '</div>';
-                  }
-                  detailsContainer.appendChild(detailsSquare);
+    // Function to highlight the word on mouseover
+    function highlightWord(cell, word, tf, occurrences) {
+        var selectedDecade = getDecadeFromCell(cell);
+        d3.selectAll("td").filter(function () {
+            return d3.select(this).text() === word;
+        }).classed("matching-word", true);
+        //console.log("Word:", word);
+        //console.log("Selected Decade:", selectedDecade);
+        //console.log("Term Frequency:", tf_per_decade);
+        //console.log("Occurrences:", occurrences);
+    }
 
-                  var url = details.url;
-                            console.log(details)
-                            var img = document.createElement('img');
-                            img.src = url;
-                            img.style.maxWidth = '50%';
-                            img.style.height = 'auto'; 
-                            detailsSquare.appendChild(img);
-              });
+    // Function to change matching words
+    function changeMatchingWords(cell, word, tf, occurrences) {
+        hideOverlay();
+        var selectedDecade = getDecadeFromCell(cell);
 
-              overlayElement.appendChild(detailsContainer);
-          });
-      } 
+        showOverlay(selectedDecade, word, tf, occurrences);
 
-      // Function to highlight the word on mouseover
-      function highlightWord(cell, word, tf, occurrences) {
-          var selectedDecade = getDecadeFromCell(cell);
-          d3.selectAll("td").filter(function () {
-              return d3.select(this).text() === word;
-          }).classed("matching-word", true);
-          console.log("Word:", word);
-          console.log("Selected Decade:", selectedDecade);
-          console.log("Term Frequency:", tf_per_decade);
-          console.log("Occurrences:", occurrences);
-      }
+        d3.selectAll("td").filter(function () {
+            return d3.select(this).text() === word;
+        }).classed("matching-word", true);
+    }
 
-      // Function to change matching words
-      function changeMatchingWords(cell, word, tf, occurrences) {
-          hideOverlay();
-          var selectedDecade = getDecadeFromCell(cell);
-
-          showOverlay(selectedDecade, word, tf, occurrences);
-
-          d3.selectAll("td").filter(function () {
-              return d3.select(this).text() === word;
-          }).classed("matching-word", true);
-      }
-
-      function removeHighlight(cell) {
+    function removeHighlight(cell) {
         var selectedWord = d3.select(cell).text();
         d3.selectAll("td").filter(function () {
             return d3.select(this).text() === selectedWord;
         }).classed("matching-word", false);
-      }
+    }
 
-      // Function to get term frequency for the selected decade
-      function getTermFrequencyForDecade(decade) {
-          var wordsInDecade = data.filter(d => d.decade === decade);
-          return wordsInDecade.length;
-      }
+    // Function to get term frequency for the selected decade
+    function getTermFrequencyForDecade(decade) {
+        var wordsInDecade = data.filter(d => d.decade === decade);
+        return wordsInDecade.length;
+    }
 
-      // Function to get the decade from a cell
-      function getDecadeFromCell(cell) {
-          var cellIndex = cell.cellIndex;
-          var selectedDecade = decades[cellIndex];
-          return selectedDecade;
-      }
-           
-      function highlightColumn(column, termFrequency) {
-               var columnIndex = column.cellIndex;
-               var selectedDecade = decades[columnIndex];
-               var tooltipText = "There are " + termFrequency + " different terms in this time period";
-               var tooltip = document.createElement("div");
-               tooltip.className = "column-tooltip";
-               tooltip.innerHTML = tooltipText;
-               column.appendChild(tooltip);
-               d3.selectAll("td:nth-child(" + (columnIndex + 1) + ")").classed("matching-column", true);
-           }
+    // Function to get the decade from a cell
+    function getDecadeFromCell(cell) {
+        var cellIndex = cell.cellIndex;
+        var selectedDecade = decades[cellIndex];
+        return selectedDecade;
+    }
+        
+    function highlightColumn(column, termFrequency) {
+            var columnIndex = column.cellIndex;
+            var selectedDecade = decades[columnIndex];
+            var tooltipText = "There are " + termFrequency + " different terms in this time period";
+            var tooltip = document.createElement("div");
+            tooltip.className = "column-tooltip";
+            tooltip.innerHTML = tooltipText;
+            column.appendChild(tooltip);
+            d3.selectAll("td:nth-child(" + (columnIndex + 1) + ")").classed("matching-column", true);
+        }
 
 
-      function removeColumnHighlight() {
-          d3.selectAll("td").classed("matching-column", false);
-      }
+    function removeColumnHighlight() {
+        d3.selectAll("td").classed("matching-column", false);
+    }
 
-      function hideOverlay() {
-          overlayElement = document.getElementById("overlay");
-          overlayElement.style.display = "none";
-      }
+    function hideOverlay() {
+        overlayElement = document.getElementById("overlay");
+        overlayElement.style.display = "none";
+    }
 
-      function highlightMatchingWords(refined, word, color) {
+    function highlightMatchingWords(refined, word, color) {
         // Lowercase the input to enable case-insensitive comparisons
         word = word.toLowerCase();
 
@@ -508,86 +512,86 @@
     }
 
 
-      function updateVisualization() {
-           var existingElements = chartSvg.selectAll("*");
-           hideOverlay()
+    function updateVisualization() {
+        var existingElements = chartSvg.selectAll("*");
+        hideOverlay()
 
-           // Check if there are existing elements
-           if (!existingElements.empty()) {
-               // Clear existing chart elements
-               existingElements.remove();
-           }
+        // Check if there are existing elements
+        if (!existingElements.empty()) {
+            // Clear existing chart elements
+            existingElements.remove();
+        }
 
-           function showOverlay(selectedDecade, word, tfInfo, occurrences) {
-               overlayElement = document.getElementById("overlay");
-               // Clear the overlay before appending new details
-               overlayElement.innerHTML = '';
-   
-               // Display word and decade at the top
-               var header = document.createElement("div");
-              header.className = "overlay-header";
-               header.innerHTML = '<div>Word: ' + word + '</div><div>Decade: ' + selectedDecade + '</div>';
-               overlayElement.appendChild(header);
-               
-               // Fetch details for the highlighted word
-               fetchDetails(word, occurrences);
-   
-               // Get the position of the clicked word
-               var cellRect = document.querySelector(".matching-word").getBoundingClientRect();
-   
-               // Calculate the space available both below and above
-               var spaceBelow = window.innerHeight - cellRect.bottom;
-               var spaceAbove = cellRect.top;
-   
-               // Check if there is more space below or above and adjust the overlay position accordingly
-               if (spaceBelow >= spaceAbove) {
-                   overlayElement.style.top = (10) + "px";
-                   overlayElement.style.bottom = ""; // Remove the bottom property
-               } else {
-                   overlayElement.style.bottom = 10 + "px";
-                   overlayElement.style.top = ""; // Remove the top property
-               }
-   
-               // Set the left or right property based on available space
-               if (cellRect.left < window.innerWidth / 2) {
-                   overlayElement.style.right = 10 + "px";
-                   overlayElement.style.left = ""; // Remove the right property
-               } else {
-                   overlayElement.style.left = 10 + "px";
-                   overlayElement.style.right = ""; // Remove the left property
-               }
-   
-               overlayElement.style.display = "block";
-           }
-   
-           // Function to fetch details for the highlighted word
-           function fetchDetails(word, occurrences) {
+        function showOverlay(selectedDecade, word, tfInfo, occurrences) {
+            overlayElement = document.getElementById("overlay");
+            // Clear the overlay before appending new details
+            overlayElement.innerHTML = '';
+
+            // Display word and decade at the top
+            var header = document.createElement("div");
+            header.className = "overlay-header";
+            header.innerHTML = '<div>Word: ' + word + '</div><div>Decade: ' + selectedDecade + '</div>';
+            overlayElement.appendChild(header);
+            
+            // Fetch details for the highlighted word
+            fetchDetails(word, occurrences);
+
+            // Get the position of the clicked word
+            var cellRect = document.querySelector(".matching-word").getBoundingClientRect();
+
+            // Calculate the space available both below and above
+            var spaceBelow = window.innerHeight - cellRect.bottom;
+            var spaceAbove = cellRect.top;
+
+            // Check if there is more space below or above and adjust the overlay position accordingly
+            if (spaceBelow >= spaceAbove) {
+                overlayElement.style.top = (10) + "px";
+                overlayElement.style.bottom = ""; // Remove the bottom property
+            } else {
+                overlayElement.style.bottom = 10 + "px";
+                overlayElement.style.top = ""; // Remove the top property
+            }
+
+            // Set the left or right property based on available space
+            if (cellRect.left < window.innerWidth / 2) {
+                overlayElement.style.right = 10 + "px";
+                overlayElement.style.left = ""; // Remove the right property
+            } else {
+                overlayElement.style.left = 10 + "px";
+                overlayElement.style.right = ""; // Remove the left property
+            }
+
+            overlayElement.style.display = "block";
+        }
+
+        // Function to fetch details for the highlighted word
+        function fetchDetails(word, occurrences) {
                 if (refined_by === 'creator' || refined_by === 'subject') {
                     var filepath = "cleaned_df.csv";
                 }
                 else{
                     var filepath = "cleaned_author_df.csv";
                 }
-                // var filepath = "cleaned_df copy.csv";
-                 // Assuming cleaned_author_df.csv is loaded separately
-                 d3.csv(filepath).then(function (authorData) {
-                   // Initialize an array to store occurrence details
-                   var occurrenceDetails = [];
-   
-                   // Loop through occurrences to get corresponding details
-                   occurrences.forEach(function (occurrence) {
-                       // Assuming the 'occurrence' field in tf_stemmed_by_decade_with_occurrences.csv
-                       // is an array of indices corresponding to rows in cleaned_author_df.csv
-                       var rowIndex = parseInt(occurrence);
-   
-                       // Check if the rowIndex is a valid index in the author data
-                       if (!isNaN(rowIndex) && rowIndex >= 0 && rowIndex < authorData.length) {
-                           // Push occurrence details to the array
-                           var details = authorData[rowIndex];
-                           occurrenceDetails.push(details);
-                       }
-                   });
-   
+                var filepath = "cleaned_df copy.csv";
+                // Assuming cleaned_author_df.csv is loaded separately
+                d3.csv( "cleaned_df copy.csv").then(function (authorData) {
+                // Initialize an array to store occurrence details
+                var occurrenceDetails = [];
+
+                // Loop through occurrences to get corresponding details
+                occurrences.forEach(function (occurrence) {
+                    // Assuming the 'occurrence' field in tf_stemmed_by_decade_with_occurrences.csv
+                    // is an array of indices corresponding to rows in cleaned_author_df.csv
+                    var rowIndex = parseInt(occurrence);
+
+                    // Check if the rowIndex is a valid index in the author data
+                    if (!isNaN(rowIndex) && rowIndex >= 0 && rowIndex < authorData.length) {
+                        // Push occurrence details to the array
+                        var details = authorData[rowIndex];
+                        occurrenceDetails.push(details);
+                    }
+                });
+
                     // Order occurrence details by year
                     occurrenceDetails.sort(function (a, b) {
                         return a.date - b.date;
@@ -607,19 +611,19 @@
                     detailsSquare.style.whiteSpace = "normal";
 
                     if (refined_by === 'title') {
-                      detailsSquare.innerHTML += '<div>Title: ' + highlightMatchingWords(details.title, word, "#d773e8") + '</div>';
-                      detailsSquare.innerHTML += '<div>Creator: ' + details.creator + '</div>';
-                      detailsSquare.innerHTML += '<div>Subject: ' + details.subject + '</div>';
-                      detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
-                      detailsSquare.innerHTML += '<div>Description: ' + details.description + '</div>';
+                    detailsSquare.innerHTML += '<div>Title: ' + highlightMatchingWords(details.title, word, "#d773e8") + '</div>';
+                    detailsSquare.innerHTML += '<div>Creator: ' + details.creator + '</div>';
+                    detailsSquare.innerHTML += '<div>Subject: ' + details.subject + '</div>';
+                    detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
+                    detailsSquare.innerHTML += '<div>Description: ' + details.description + '</div>';
                     }
-                  
+                
 
                     if (refined_by === 'creator') {
                         detailsSquare.innerHTML += '<div>Title: ' + details.title + '</div>';
                         detailsSquare.innerHTML += '<div>Creator: ' + highlightMatchingWords(details.creator, word, "#d773e8") + '</div>';
                         detailsSquare.innerHTML += '<div>Subject: ' + details.subject + '</div>';
-                      detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
+                    detailsSquare.innerHTML += '<div>Year: ' + details.date + '</div>';
                         detailsSquare.innerHTML += '<div>Description: ' + details.description + '</div>';
                     }
 
@@ -639,178 +643,178 @@
                         detailsSquare.innerHTML += '<div>Description: ' + highlightMatchingWords(details.description, word, "#d773e8") + '</div>';
                     }
 
-                   overlayElement.appendChild(detailsContainer);
-               });
-           })}; 
-   
-   
-           // Function to parse the occurrences string into an array of integers
-           function parseOccurrences(occurrencesString) {
-           try {
-               // Remove square brackets and split the string by commas
-               const occurrencesArray = occurrencesString.replace(/\[|\]/g, '').split(',').map(Number);
-               return occurrencesArray;
-           } catch (error) {
-               console.error('Error parsing occurrences:', error);
-               return [];
-           }
-           }
-       
-           // Function to load the tf-IDF data
-           function loadtfData() {
-               return d3.csv(file).then(function (data) {
-                   decades = Array.from(new Set(data.map(d => d.decade)));
-                   decades = decades.filter(decade => {
-                       const [start, end] = decade.split('-').map(Number);
-                       return start >= 1450 && end <= 2050;
-                   });
-
-                   // Store term frequency globally
-                   tf_per_decade = data.length;
-
-                   var wordTable = {};
-                   decades.forEach(function (decade) {
-                       var wordsInDecade = data.filter(d => d.decade === decade);
-                    //    console.log("decade term frequency - " + wordsInDecade.length);
-                       var topWords = wordsInDecade.sort((a, b) => b.tf - a.tf).slice(0, 80);
-                       topWords = topWords.sort((a, b) => a.word.localeCompare(b.word));
-                       wordTable[decade] = topWords;
-                   });
-
-                   // Function to get term frequency for the selected decade
-                   function getTermFrequencyForDecade(decade) {
-                       var wordsInDecade = data.filter(d => d.decade === decade);
-                       return wordsInDecade.length;
-                   }
-
-                   var svg = d3.select("#line-svg");
-                   var tableHtml = '<table>';
-                   tableHtml += '<tr>';
-                   decades.forEach(function (decade) {
-                       tableHtml += `<th onmouseover="highlightColumn(this, '${getTermFrequencyForDecade(decade)}')" onmouseout="removeColumnHighlight()">${decade}</th>`;
-                   });
-                   tableHtml += '</tr>';
-
-                   for (var i = 0; i < 80; i++) {
-                       tableHtml += '<tr>';
-                       decades.forEach(function (decade, colIndex) {
-                           var wordObj = wordTable[decade][i];
-                           if (wordObj) {
-                               var tf = +wordObj.tf;
-                               var occurrences = parseOccurrences(wordObj.occurrences);
-                               var fontSize = Math.min(30, Math.max(8, 2000 * tf));
-                               // Use an inline function to pass parameters to the functions
-                               tableHtml += `<td style="font-size: ${fontSize}px;" onmouseover="highlightWord(this, '${wordObj.word}', ${tf}, ${JSON.stringify(occurrences)})" onmouseout="removeHighlight(this)" onclick="changeMatchingWords(this, '${wordObj.word}', ${tf}, ${JSON.stringify(occurrences)})">${wordObj.word}</td>`;
-                           } else {
-                               tableHtml += '<td></td>';
-                           }
-                       });
-                       tableHtml += '</tr>';
-                   }
-
-                   // Append table as foreignObject to the SVG container
-                   svg.append("foreignObject")
-                       .attr("width", "100%")
-                       .attr("height", "100%")
-                       .html(tableHtml);
-               });
-           }
-
-           function highlightColumn(column, termFrequency) {
-               var columnIndex = column.cellIndex;
-               var selectedDecade = decades[columnIndex];
-               var tooltipText = "There are " + termFrequency + " different terms in this time period";
-               var tooltip = document.createElement("div");
-               tooltip.className = "column-tooltip";
-               tooltip.innerHTML = tooltipText;
-               column.appendChild(tooltip);
-               d3.selectAll("td:nth-child(" + (columnIndex + 1) + ")").classed("matching-column", true);
-           }
+                overlayElement.appendChild(detailsContainer);
+            });
+        })}; 
 
 
-           function removeColumnHighlight() {
-               d3.selectAll("td").classed("matching-column", false);
-           }
+        // Function to parse the occurrences string into an array of integers
+        function parseOccurrences(occurrencesString) {
+        try {
+            // Remove square brackets and split the string by commas
+            const occurrencesArray = occurrencesString.replace(/\[|\]/g, '').split(',').map(Number);
+            return occurrencesArray;
+        } catch (error) {
+            //console.error('Error parsing occurrences:', error);
+            return [];
+        }
+        }
+    
+        // Function to load the tf-IDF data
+        function loadtfData() {
+            return d3.csv(file).then(function (data) {
+                decades = Array.from(new Set(data.map(d => d.decade)));
+                decades = decades.filter(decade => {
+                    const [start, end] = decade.split('-').map(Number);
+                    return start >= 1450 && end <= 2050;
+                });
 
-           function hideOverlay() {
-               overlayElement = document.getElementById("overlay");
-               overlayElement.style.display = "none";
-           }
+                // Store term frequency globally
+                tf_per_decade = data.length;
 
-           // Add event listener to document for 'click' event
-           document.addEventListener('click', function (event) {
-               if (event.target.closest('.occurrence-square')) {
-                   // Clicking on an occurrence-square, hide the overlay
-                   hideOverlay();
-               }
-               overlayElement = document.getElementById("overlay");
-               overlayElement.addEventListener('click', function(event) {
+                var wordTable = {};
+                decades.forEach(function (decade) {
+                    var wordsInDecade = data.filter(d => d.decade === decade);
+                    //    //console.log("decade term frequency - " + wordsInDecade.length);
+                    var topWords = wordsInDecade.sort((a, b) => b.tf - a.tf).slice(0, 80);
+                    topWords = topWords.sort((a, b) => a.word.localeCompare(b.word));
+                    wordTable[decade] = topWords;
+                });
+
+                // Function to get term frequency for the selected decade
+                function getTermFrequencyForDecade(decade) {
+                    var wordsInDecade = data.filter(d => d.decade === decade);
+                    return wordsInDecade.length;
+                }
+
+                var svg = d3.select("#line-svg");
+                var tableHtml = '<table>';
+                tableHtml += '<tr>';
+                decades.forEach(function (decade) {
+                    tableHtml += `<th onmouseover="highlightColumn(this, '${getTermFrequencyForDecade(decade)}')" onmouseout="removeColumnHighlight()">${decade}</th>`;
+                });
+                tableHtml += '</tr>';
+
+                for (var i = 0; i < 80; i++) {
+                    tableHtml += '<tr>';
+                    decades.forEach(function (decade, colIndex) {
+                        var wordObj = wordTable[decade][i];
+                        if (wordObj) {
+                            var tf = +wordObj.tf;
+                            var occurrences = parseOccurrences(wordObj.occurrences);
+                            var fontSize = Math.min(30, Math.max(8, 2000 * tf));
+                            // Use an inline function to pass parameters to the functions
+                            tableHtml += `<td style="font-size: ${fontSize}px;" onmouseover="highlightWord(this, '${wordObj.word}', ${tf}, ${JSON.stringify(occurrences)})" onmouseout="removeHighlight(this)" onclick="changeMatchingWords(this, '${wordObj.word}', ${tf}, ${JSON.stringify(occurrences)})">${wordObj.word}</td>`;
+                        } else {
+                            tableHtml += '<td></td>';
+                        }
+                    });
+                    tableHtml += '</tr>';
+                }
+
+                // Append table as foreignObject to the SVG container
+                svg.append("foreignObject")
+                    .attr("width", "100%")
+                    .attr("height", "100%")
+                    .html(tableHtml);
+            });
+        }
+
+        function highlightColumn(column, termFrequency) {
+            var columnIndex = column.cellIndex;
+            var selectedDecade = decades[columnIndex];
+            var tooltipText = "There are " + termFrequency + " different terms in this time period";
+            var tooltip = document.createElement("div");
+            tooltip.className = "column-tooltip";
+            tooltip.innerHTML = tooltipText;
+            column.appendChild(tooltip);
+            d3.selectAll("td:nth-child(" + (columnIndex + 1) + ")").classed("matching-column", true);
+        }
+
+
+        function removeColumnHighlight() {
+            d3.selectAll("td").classed("matching-column", false);
+        }
+
+        function hideOverlay() {
+            overlayElement = document.getElementById("overlay");
+            overlayElement.style.display = "none";
+        }
+
+        // Add event listener to document for 'click' event
+        document.addEventListener('click', function (event) {
+            if (event.target.closest('.occurrence-square')) {
+                // Clicking on an occurrence-square, hide the overlay
+                hideOverlay();
+            }
+            overlayElement = document.getElementById("overlay");
+            overlayElement.addEventListener('click', function(event) {
                     // Hide overlay
                     overlayElement.style.display = 'none';
                 });
-               
-           })
+            
+        })
 
-           // Function to highlight the word on mouseover
-           function highlightWord(cell, word, tf, occurrences) {
-               var selectedDecade = getDecadeFromCell(cell);
-               d3.selectAll("td").filter(function () {
-                   return d3.select(this).text() === word;
-               }).classed("matching-word", true);
-               console.log("Word:", word);
-               console.log("Selected Decade:", selectedDecade);
-               console.log("Term Frequency:", tf_per_decade);
-               console.log("Occurrences:", occurrences);
-           }
+        // Function to highlight the word on mouseover
+        function highlightWord(cell, word, tf, occurrences) {
+            var selectedDecade = getDecadeFromCell(cell);
+            d3.selectAll("td").filter(function () {
+                return d3.select(this).text() === word;
+            }).classed("matching-word", true);
+            //console.log("Word:", word);
+            //console.log("Selected Decade:", selectedDecade);
+            //console.log("Term Frequency:", tf_per_decade);
+            //console.log("Occurrences:", occurrences);
+        }
 
-           // Function to change matching words
-           function changeMatchingWords(cell, word, tf, occurrences) {
-               hideOverlay();
-               var selectedDecade = getDecadeFromCell(cell);
+        // Function to change matching words
+        function changeMatchingWords(cell, word, tf, occurrences) {
+            hideOverlay();
+            var selectedDecade = getDecadeFromCell(cell);
 
-               showOverlay(selectedDecade, word, tf, occurrences);
+            showOverlay(selectedDecade, word, tf, occurrences);
 
-               d3.selectAll("td").filter(function () {
-                   return d3.select(this).text() === word;
-               }).classed("matching-word", true);
-           }
+            d3.selectAll("td").filter(function () {
+                return d3.select(this).text() === word;
+            }).classed("matching-word", true);
+        }
 
-           // Function to get the decade from a cell
-           function getDecadeFromCell(cell) {
-               var cellIndex = cell.cellIndex;
-               var selectedDecade = decades[cellIndex];
-               return selectedDecade;
-           }
+        // Function to get the decade from a cell
+        function getDecadeFromCell(cell) {
+            var cellIndex = cell.cellIndex;
+            var selectedDecade = decades[cellIndex];
+            return selectedDecade;
+        }
 
-           // Function to load the descriptions from cleaned_author_df.csv
-           function loadDescriptions() {
-               return d3.csv("cleaned_author_df.csv").then(function (data) {
-                   var descriptionMap = {};
-                   data.forEach(function (row) {
-                       descriptionMap[row.word] = row;
-                   });
-                   return descriptionMap;
-               });
-           }
+        // Function to load the descriptions from cleaned_author_df.csv
+        function loadDescriptions() {
+            return d3.csv("cleaned_author_df.csv").then(function (data) {
+                var descriptionMap = {};
+                data.forEach(function (row) {
+                    descriptionMap[row.word] = row;
+                });
+                return descriptionMap;
+            });
+        }
 
-           function removeHighlight(cell) {
-               var selectedWord = d3.select(cell).text();
-               d3.selectAll("td").filter(function () {
-                   return d3.select(this).text() === selectedWord;
-               }).classed("matching-word", false);
-           }
+        function removeHighlight(cell) {
+            var selectedWord = d3.select(cell).text();
+            d3.selectAll("td").filter(function () {
+                return d3.select(this).text() === selectedWord;
+            }).classed("matching-word", false);
+        }
 
-           // Load descriptions and tf-IDF data when the page is loaded
-           Promise.all([loadDescriptions(), loadtfData()]).then(function (results) {
-               descriptions = results[0];
-           })
-          // Add event listener for change event on sort-select
-          sortSelect.addEventListener("change", function () {
-              // Update selectedOption value
-              selectedOption = sortSelect.value;
-              // Call sortData function with the new selected option
-              sortData(selectedOption);
-          });
-       }
+        // Load descriptions and tf-IDF data when the page is loaded
+        Promise.all([loadDescriptions(), loadtfData()]).then(function (results) {
+            descriptions = results[0];
+        })
+        // Add event listener for change event on sort-select
+        sortSelect.addEventListener("change", function () {
+            // Update selectedOption value
+            selectedOption = sortSelect.value;
+            // Call sortData function with the new selected option
+            sortData(selectedOption);
+        });
+    }
 
-   </script>
+</script>
