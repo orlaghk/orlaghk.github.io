@@ -1098,8 +1098,7 @@
                         return item.trim();
                     });
                 };
-
-            
+                
                 var creatorString = cleanUpString(authorData.creator);
                 var creatorArray = parseCreatorString(authorData.creator);
                 var creator = creatorArray[index] || '';
@@ -1116,6 +1115,11 @@
                 var languageArray = parseArrayString(languageString);
                 var language = languageArray[index] || '';
 
+                basic_url = 'https://www.uoduckstore.com/TDS%20Product%20Images/QuickStudy%20Book%20for%20Calculus_1.jpg?resizeid=3&resizeh=195&resizew=195'
+
+                if (!url) {
+                    url = basic_url; 
+                }
 
                 d3.select("#overlay-creator").text("Author:  " + creator);
                 d3.select("#overlay-pdf-image").attr("src", url);
