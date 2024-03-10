@@ -682,8 +682,6 @@
                 string = string.replace(/^"""|"""$/g, '');
                 // Now, let's replace the comma-space combination with just a comma
                 string = string.replace(/', '/g, '", "');
-                string = string.replace("', ", '", ');
-                string = string.replace(", '", ', "');
                 // Escape backslashes
                 string = string.replace(/\\/g, '\\\\');
                 // Enclose the result in square brackets to make it a valid JSON array
