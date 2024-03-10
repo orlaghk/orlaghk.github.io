@@ -845,9 +845,10 @@
 
                             var url = urlsArray[titleObj.i]
 
+                            if (year === thisyear) { 
+                                displayOverlay(author, year, title, url, titleObj.i);
+                            }
 
-
-                            displayOverlay(author, year, title, url, titleObj.i);
 
                         });
                     }
