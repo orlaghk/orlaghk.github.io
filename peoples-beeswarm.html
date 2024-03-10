@@ -860,7 +860,9 @@
 
 
 
-                            displayOverlay(author, thisyear, title, url, titleObj.i);
+                            if (year === thisyear) { 
+                                displayOverlay(author, year, title, url, titleObj.i);
+                            }
 
                         });
                         }
