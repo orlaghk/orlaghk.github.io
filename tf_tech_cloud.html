@@ -192,14 +192,14 @@
 <body>
 <div class="tooltip">
     <span id="info-circle"></span>
-    <span class="tooltiptext">Hover over a word to find other time periods where it is featured! Click on a word to vie some of the records it is in.</span>
+    <span class="tooltiptext">Hover over a word to find other time periods where it is featured! Click on a word to view some of the records it is in. The higher the ranking of a word, the larger the font.</span>
 </div>  
     <button id="tf-button" onclick="goTF()">Go to TFIDF</button>
     <div id="sorting-container">
         <label for="sort-select">The
             <span class="tooltip" id="tfidf-tooltip">
-                <span>TF</span>
-                <span class="tooltiptext"> Term Frequency measures the frequency of a term (word) within a document. A higher TF means a term is more likely to be important within a document. </span>
+                <span><u>TF</u></span>
+                <span class="tooltiptext"> Term Frequency measures the frequency of a term (word) within a document. Here, the term frequency is measured out of each time period. The TF is represented by the font size of each word. </span>
             </span>
             of the
         </label>
