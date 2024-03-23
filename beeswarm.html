@@ -1133,9 +1133,14 @@
                     url = basic_url; 
                 }
 
-                var ogString = cleanUpString(authorData.og_dates);
-                var ogArray = parseArrayString(ogString);
-                var og = ogArray[index] || year;
+
+                var og_dates_array = JSON.parse(authorData.og_dates);
+                var og = og_dates_array[index] || 'nan';
+
+                if (og === 'nan' || og === '') {
+                    og = year;
+                }
+
 
                 d3.select("#overlay-creator").text("Author:  " + creator);
                 d3.select("#overlay-pdf-image").attr("src", url);
