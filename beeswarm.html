@@ -1139,7 +1139,7 @@
                 var og = ogArray[index] || year;
                 
                 var ogInt = String(og).replace(/\D/g, '');
-                if (ogInt.length === 4 && ogInt !== String(year)) {
+                if (ogInt.length === 4 && ogInt !== String(year) || ogInt === 'nan' || ogInt === '') {
                     console.log(og)
                     og = year;
                 } else {
@@ -1148,7 +1148,7 @@
 
                 d3.select("#overlay-creator").text("Author:  " + creator);
                 d3.select("#overlay-pdf-image").attr("src", url);
-                d3.select("#overlay-date").text("Date: " + og);
+                d3.select("#overlay-date").text("Year: " + og);
                 d3.select("#overlay-title").text("Title: " + title);
 
                 // Display additional details based on the title index
