@@ -1139,7 +1139,7 @@
                 var og = ogArray[index] || year;
                 
                 var ogInt = String(og).replace(/\D/g, '');
-                if (ogInt.length === 4 && ogInt !== year) {
+                if (ogInt.length === 4 && ogInt !== String(year)) {
                     console.log(og)
                     og = year;
                 } else {
