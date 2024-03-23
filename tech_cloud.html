@@ -230,7 +230,7 @@
     
 
         function goBack() {
-            window.location.href = 'home.html';
+            window.location.href = 'index.html';
         }
 
         function goTF() {
@@ -323,15 +323,13 @@
     }
 
     function fetchDetails(word, occurrences) {
-        var filepath = "finalATTEMPT1.csv";
+        var filepath = "half_df_with_og_dates.csv";
         d3.csv(filepath).then(function (authorData) {
             // Initialize an array to store occurrence details
             var occurrenceDetails = [];
 
             // Loop through occurrences to get corresponding details
             occurrences.forEach(function (occurrence) {
-                // Assuming the 'occurrence' field in tfidf_stemmed_by_decade_with_occurrences.csv
-                // is an array of indices corresponding to rows in cleaned_author_df.csv
                 var rowIndex = parseInt(occurrence);
 
                 // Check if the rowIndex is a valid index in the author data

@@ -227,7 +227,7 @@
     
 
     function goBack() {
-        window.location.href = 'home.html';
+        window.location.href = 'index.html';
     }
 
     function goTF() {
@@ -320,7 +320,7 @@
     }
 
     function fetchDetails(word, occurrences) {
-        var filepath = "finalATTEMPT1.csv";
+        var filepath = "fhalf_df_with_og_dates.csv";
         d3.csv(filepath).then(function (authorData) {
             // Initialize an array to store occurrence details
             var occurrenceDetails = [];
