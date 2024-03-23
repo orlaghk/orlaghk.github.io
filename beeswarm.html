@@ -1138,11 +1138,11 @@
                 var ogArray = parseArrayString(ogString);
                 var og = ogArray[index] || year;
                 
-                var ogInt = og.replace(/\D/g, '');
+                var ogInt = String(og).replace(/\D/g, '');
                 if (ogInt.length === 4 && ogInt !== year) {
                     og = year;
                 } else {
-                    og = ogInt;
+                    og = og;
                 }
 
                 d3.select("#overlay-creator").text("Author:  " + creator);
