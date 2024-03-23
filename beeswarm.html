@@ -370,6 +370,11 @@
                 window.location.href = 'peoples-beeswarm.html';
             });
         }    
+        if (oxfordButton) {
+            oxfordButton.addEventListener("click", function () {
+                window.location.href = 'odnb_beeswarm.html';
+            });
+        }    
         var backToTopButton= document.getElementById("backToTopButton");
         if (backToTopButton) {
             backToTopButton.addEventListener("click", function () {
@@ -573,7 +578,8 @@
                                     creators : d.creator,
                                     languages: d.languages,
                                     descriptions: d.descriptions,
-                                    subjects: d.subjects
+                                    subjects: d.subjects,
+                                    og_dates: d.og_dates
                                 };
                             });
                         }
@@ -1127,9 +1133,13 @@
                     url = basic_url; 
                 }
 
+                var ogString = cleanUpString(authorData.og_dates);
+                var ogArray = parseArrayString(ogString);
+                var og = ogArray[index] || year;
+
                 d3.select("#overlay-creator").text("Author:  " + creator);
                 d3.select("#overlay-pdf-image").attr("src", url);
-                d3.select("#overlay-date").text("Date: " + year);
+                d3.select("#overlay-date").text("Date: " + og);
                 d3.select("#overlay-title").text("Title: " + title);
 
                 // Display additional details based on the title index
