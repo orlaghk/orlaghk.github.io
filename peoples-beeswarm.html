@@ -403,7 +403,7 @@
             });
 
             var mergedData = mergedData.filter(function (d) {
-                return d.Frequency > 2;
+                return d.Frequency > 0;
             });
 
             var sortSelect = document.getElementById("sort-select");
@@ -457,7 +457,7 @@
                 var margin = { left: 130, top: 20, right: 20, bottom: 20 };
                 var svg = d3.select("#chart-svg")
                     .attr("width", 1100)
-                    .attr("height", 20000);
+                    .attr("height", 200000);
 
                 var xScale = d3.scaleLinear()
                     .domain([d3.min(mergedData, function (d) { return d.earliest_year; }),
