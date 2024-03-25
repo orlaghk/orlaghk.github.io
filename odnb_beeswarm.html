@@ -391,7 +391,7 @@
             });
         }    
 
-        var dataPath = "odnb_beeswarm.csv";
+        var dataPath = "odnb_beeswarm_no_duplicates.csv";
         d3.csv(dataPath).then(function (mergedData) {
             mergedData.forEach(function (d) {
                 d.earliest_year = +d.earliest_year;
@@ -1055,7 +1055,7 @@
                     }
                     else{
                         titleBox.append("div")
-                            .text("Author: " + creator + "\n\n")
+                            .text("Author: " + author + "\n\n")
                             .style("font-weight", "bold");
                     }
                     
@@ -1177,7 +1177,7 @@
                 og = og === "NaN" || og === "" ? "unavailable" : og;
 
 
-                d3.select("#overlay-creator").text("Author:  " + author);
+                d3.select("#overlay-creator").text("Creator:  " + creator);
                 d3.select("#overlay-pdf-image").attr("src", url);
                 d3.select("#overlay-date").text("Year: " + year);
                 d3.select("#overlay-title").text("Title: " + title);
