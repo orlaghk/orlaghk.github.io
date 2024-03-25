@@ -517,7 +517,7 @@
 
                 var circleyScale = d3.scaleBand()
                     .domain(mergedData.map(function (d) { return d.author; }))
-                    .range([margin.top, svg.attr("height") - margin.bottom + 47])
+                    .range([margin.top, svg.attr("height") - margin.bottom + 47.5])
                     .padding(0.2);
 
                 // Adding vertical grid lines
@@ -581,7 +581,7 @@
                         .on('mouseover', function (d) {
                             if (isOverlayOpen) return;
                             var xPos = xScale(d.year);
-                            var yPos = circleyScale(d.author)  ; 
+                            var yPos = yScale(d.author)  ; 
                             svg.append("line")
                                 .attr("class", "hover-line")
                                 .attr("x1", xPos)

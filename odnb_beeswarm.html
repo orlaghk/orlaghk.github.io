@@ -546,7 +546,7 @@
 
                 var circleyScale = d3.scaleBand()
                     .domain(mergedData.map(function (d) { return d.cleaned_creator; }))
-                    .range([margin.top, svg.attr("height") - margin.bottom + 40])
+                    .range([margin.top, svg.attr("height") - margin.bottom + 42])
                     .padding(0.2);
                 
                 
@@ -599,7 +599,7 @@
                         .on('mouseover', function (d) {
                             if (isOverlayOpen) return;
                             var xPos = xScale(d.year);
-                            var yPos = circleyScale(d.cleaned_creator) ;
+                            var yPos = yScale(d.cleaned_creator) ;
               
                             // Append the line
                             svg.append("line")
