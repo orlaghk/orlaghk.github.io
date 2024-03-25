@@ -324,10 +324,13 @@
         </div>
         <div id="chart-container">
             <div id="myDiv">
+                
                 <div id="chart-svg-container">
                     <svg id="chart-svg" max-width="100%" height="6000"></svg>
                     <svg id="xAxis" width="60%" height="50"></svg>
                 </div>
+                
+                
             </div>
             <div id="titles-container">
                 <div id="author-title"></div>
@@ -355,6 +358,9 @@
         var isOverlayOpen = false;
         var selectedOption; 
 
+        
+        
+        
         // console.log("Selected option:", selectedOption);
             
         var backButton = document.getElementById("backButton");
@@ -454,12 +460,11 @@
                 var tip = d3.tip()
                     .attr('class', 'd3-tip')
                     .offset([-10, 0])
-                
-                var containerWidth = document.getElementById('chart-svg').parentElement.clientWidth;
+                    
 
-                var margin = { left: 230, top: 20, right: 20, bottom: 20 };
+                var margin = { left: 130, top: 20, right: 20, bottom: 20 };
                 var svg = d3.select("#chart-svg")
-                    .attr("width", 1500)
+                    .attr("width", 1100)
                     .attr("height", 200000);
 
                 var xScale = d3.scaleLinear()
@@ -1071,6 +1076,7 @@
                 }
             }
 
+
             function scrollToTitleContainer(titleBox) {
                 var titlesContainer = d3.select("#titles-container").node();
 
@@ -1142,23 +1148,7 @@
                 var languageArray = parseArrayString(languageString);
                 var language = languageArray[index] || '';
                 
-                var ogString = cleanUpString(authorData.og_dates);
-                var ogArray = parseArrayString(ogString);
-                var og = ogArray[index] || year;
                 
-                var ogInt = String(og).replace(/\D/g, '');
-                if (ogInt.length === 4 && ogInt !== String(year) || ogInt === 'nan' || ogInt === '') {
-                    console.log(og)
-                    og = year;
-                } else {
-                    og = og;
-                }
-
-                d3.select("#overlay-creator").text("Author:  " + creator);
-                d3.select("#overlay-pdf-image").attr("src", url);
-                d3.select("#overlay-date").text("Year: " + og);
-                d3.select("#overlay-title").text("Title: " + title);
-
 
                 // Display additional details based on the title index
                 if (index !== -1 ) {
@@ -1172,10 +1162,14 @@
                     d3.select("#overlay-details").html("Details not available");
                 }
 
+
                 // Show the overlay
                 overlay.style("display", "block");
             
             }
+
+                
+            
 
             function isValidJSON(str) {
                 try {
