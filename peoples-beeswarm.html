@@ -486,7 +486,7 @@
                     .attr("class", "rect")
                     .attr("opacity", 0.4)
                     .attr("x", function (d) { return xScale(d.earliest_year); })
-                    .attr("y", function (d) { return yScale(d.author) ; }) // Adjusted y-position
+                    .attr("y", function (d) { return yScale(d.author) + 2; }) // Adjusted y-position
                     .attr("width", function (d) {
                         return Math.max(5, xScale(d.latest_year) - xScale(d.earliest_year));
                     })
@@ -526,10 +526,6 @@
                     .attr("y2", mergedData.length * 30)
                     .attr("stroke", "white"); 
 
-                var yScale = d3.scaleBand()
-                    .domain(mergedData.map(function (d) { return d.author; }))
-                    .range([margin.top, svg.attr("height") - margin.bottom])
-                    .padding(0);
                 
                 // Adding x-axis
                 var xAxis = d3.axisBottom(xScale);
@@ -540,8 +536,13 @@
                 // Use forceSimulation to avoid overlap
                 var simulation = d3.forceSimulation()
                     .force("x", d3.forceX(function (d) { return xScale(d.year); }))
-                    .force("y", d3.forceY(function (d) { return yScale(d.author) + yScale.bandwidth() / 2 ; }))
-                    .force("collide", d3.forceCollide(5))
+                    .force("y", d3.forceY(function (d) { 
+                        // Calculate the y position dynamically based on the average band height
+                        var yPos = yScale(d.author) + d3.mean(yScale.range(), function(d) { return yScale.bandwidth(); }) / 2;
+                        // Adjust the y position based on the circle radius to center them vertically
+                        yPos -= d3.select(this).attr("r"); 
+                        return yPos;
+                    }))  .force("collide", d3.forceCollide(5))
                     .nodes(mergedData.flatMap(function (d) {
                         if (Array.isArray(d.dates)) {
                             return d.dates.map(function (year) {
@@ -581,7 +582,7 @@
                         .on('mouseover', function (d) {
                             if (isOverlayOpen) return;
                             var xPos = xScale(d.year);
-                            var yPos = yScale(d.author) + yScale.bandwidth() / 2 - 5;
+                            var yPos = yScale(d.author) + d3.mean(yScale.range(), function(d) { return yScale.bandwidth(); }) / 2 - 3; 
                             
                             // Append the line
                             svg.append("line")
