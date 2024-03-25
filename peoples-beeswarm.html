@@ -515,6 +515,11 @@
                         showTitlesForAuthor(d.author);
                     }); 
 
+                var circleyScale = d3.scaleBand()
+                    .domain(mergedData.map(function (d) { return d.author; }))
+                    .range([margin.top, svg.attr("height") - margin.bottom - 150])
+                    .padding(0.2);
+
                 // Adding vertical grid lines
                 svg.selectAll(".vertical-grid-line")
                     .data(xScale.ticks())
@@ -535,7 +540,7 @@
                 // Use forceSimulation to avoid overlap
                 var simulation = d3.forceSimulation()
                     .force("x", d3.forceX(function (d) { return xScale(d.year); }))
-                    .force("y", d3.forceY(function (d) { return yScale(d.author) + yScale.bandwidth() / 2 ; }))  // Adjusted y-position
+                    .force("y", d3.forceY(function (d) { return circleyScale(d.author) + yScale.bandwidth() / 2 ; }))  // Adjusted y-position
                     .force("collide", d3.forceCollide(5))
                     .nodes(mergedData.flatMap(function (d) {
                         if (Array.isArray(d.dates)) {
@@ -576,7 +581,7 @@
                         .on('mouseover', function (d) {
                             if (isOverlayOpen) return;
                             var xPos = xScale(d.year);
-                            var yPos = yScale(d.author) + yScale.bandwidth() / 2 ; 
+                            var yPos = circleyScale(d.author) + yScale.bandwidth() / 2 ; 
                             svg.append("line")
                                 .attr("class", "hover-line")
                                 .attr("x1", xPos)
