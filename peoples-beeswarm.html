@@ -34,7 +34,7 @@
             }
     
             #myDiv {
-                flex: 0 0 75%;
+                flex: 0 0 70%;
                 background-color: #6d6969;
                 z-index: 1;
             }
@@ -146,7 +146,7 @@
             #wikiButton {
                 position: fixed;
                 top: 90px;
-                left: 500px;
+                left: calc(50% - 375px);
                 padding: 5px;
                 cursor: pointer;
                 background-color: #808080;
@@ -162,7 +162,8 @@
             #peopleButton {
                 position: fixed;
                 top: 90px;
-                left: 700px;
+                left: 50%;  
+                transform: translateX(-50%);
                 padding: 5px;
                 cursor: pointer;
                 background-color: #5bc073;
@@ -175,7 +176,7 @@
             #oxfordButton {
                 position: fixed;
                 top: 90px;
-                left: 900px;
+                left: calc(50% + 225px);
                 padding: 5px;
                 cursor: pointer;
                 background-color: #808080;
@@ -447,8 +448,7 @@
                     .attr('class', 'd3-tip')
                     .offset([-10, 0])
                 
-                var containerWidth = document.getElementById('chart-svg').parentElement.clientWidth;
-
+                var containerWidth = window.innerWidth*.7;
                 var margin = { left: 250, top: 20, right: 20, bottom: 20 };
                 var svg = d3.select("#chart-svg")
                     .attr("width", containerWidth)
