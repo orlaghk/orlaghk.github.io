@@ -327,7 +327,7 @@
                 
                 <div id="chart-svg-container">
                     <svg id="chart-svg" max-width="100%" height="6000"></svg>
-                    <svg id="xAxis" width="60%" height="50"></svg>
+                    <svg id="xAxis" max-width="100%" height="50"></svg>
                 </div>
                 
                 
@@ -390,7 +390,7 @@
             });
         }    
 
-        var dataPath = "odnb_beeswarm.csv";
+        var dataPath = "odnb_beeswarm_with_matched_creator.csv";
         d3.csv(dataPath).then(function (mergedData) {
             mergedData.forEach(function (d) {
                 d.earliest_year = +d.earliest_year;
@@ -461,10 +461,11 @@
                     .attr('class', 'd3-tip')
                     .offset([-10, 0])
                     
+                var containerWidth = document.getElementById('chart-svg').parentElement.clientWidth;
 
-                var margin = { left: 130, top: 20, right: 20, bottom: 20 };
+                var margin = { left: 250, top: 20, right: 20, bottom: 20 };
                 var svg = d3.select("#chart-svg")
-                    .attr("width", 1100)
+                    .attr("width", containerWidth)
                     .attr("height", 200000);
 
                 var xScale = d3.scaleLinear()
@@ -1148,7 +1149,23 @@
                 var languageArray = parseArrayString(languageString);
                 var language = languageArray[index] || '';
                 
+                var ogString = cleanUpString(authorData.og_dates);
+                var ogArray = parseArrayString(ogString);
+                var og = ogArray[index] || year;
                 
+                var ogInt = String(og).replace(/\D/g, '');
+                if (ogInt.length === 4 && ogInt !== String(year) || ogInt === 'nan' || ogInt === '') {
+                    console.log(og)
+                    og = year;
+                } else {
+                    og = og;
+                }
+
+                d3.select("#overlay-creator").text("Author:  " + creator);
+                d3.select("#overlay-pdf-image").attr("src", url);
+                d3.select("#overlay-date").text("Year: " + og);
+                d3.select("#overlay-title").text("Title: " + title);
+
 
                 // Display additional details based on the title index
                 if (index !== -1 ) {

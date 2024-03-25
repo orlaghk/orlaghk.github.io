@@ -1,21 +1,15 @@
 import pandas as pd
 
 # Read the peoples_beeswarm DataFrame
-df = pd.read_csv("peoples_beeswarm.csv")
+df = pd.read_csv("odnb_beeswarm.csv")
+df_creator = pd.read_csv("odnb_beeswarm copy.csv")
 
-# Function to add space before each capital letter in the middle of a word
-def add_space_before_mid_word_capital(s):
-    new_string = ''
-    for i in range(len(s) - 1):
-        if s[i].islower() and s[i+1].isupper():
-            new_string += s[i] + ' '
-        else:
-            new_string += s[i]
-    new_string += s[-1]  # Adding the last character
-    return new_string
+# Merge the DataFrames based on the 'titles' column
+merged_df = pd.merge(df, df_creator[['title', 'cleaned_creator']], 
+                     on='title', 
+                     how='left')
 
-# Apply the function to the 'cleaned_creator' column
-df['author'] = df['author'].apply(add_space_before_mid_word_capital)
+# Rename the 'cleaned_creator' column to avoid duplicate columns
+merged_df.rename(columns={'cleaned_creator': 'matched_cleaned_creator'}, inplace=True)
 
-# Save the updated DataFrame to a new CSV file
-df.to_csv("peoples_beeswarm_with_spaces.csv", index=False)
+merged_df.to_csv("odnb_beeswarm_with_matched_creator.csv", index=False)
