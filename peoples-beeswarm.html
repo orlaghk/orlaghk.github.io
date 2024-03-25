@@ -296,8 +296,8 @@
             <span class="tooltiptext">Hover over a bar or circle to find discover an authors collection, or a book. Press on a book to find out more details. Sort the order of the bars by Year, Frequency or Alphabetically. Click on the different buttons to discover different varieties of datasets.</span>
         </div>    
         <button id="wikiButton">Wikipedia Driven Dataset</button>
-        <button id="oxfordButton">Personal Works Dataset</button>
-        <button id="peopleButton">People Driven Dataset</button>
+        <button id="oxfordButton">ODNB Driven Dataset</button>
+        <button id="peopleButton">Personal Works Dataset</button>
         <button id="backButton">Home</button>
         <button id="backToTopButton">Back To Top</button>
         <div id="overlay" class="overlay">
@@ -324,7 +324,7 @@
             <div id="myDiv">
                 <div id="chart-svg-container">
                     <svg id="chart-svg" max-width="100%" height="6000"></svg>
-                    <svg id="xAxis" width="60%" height="50"></svg>
+                    <svg id="xAxis"max-width="100%" height="50"></svg>
                 </div>
             </div>
             <div id="titles-container">
@@ -351,9 +351,6 @@
         var chartSvg = d3.select("#chart-svg");
         var isOverlayOpen = false;
         var selectedOption; 
-
-        
-        
         
         console.log("Selected option:", selectedOption);
             
@@ -455,7 +452,7 @@
                 var margin = { left: 250, top: 20, right: 20, bottom: 20 };
                 var svg = d3.select("#chart-svg")
                     .attr("width", containerWidth)
-                    .attr("height", 201000);
+                    .attr("height", 210000);
 
                 var xScale = d3.scaleLinear()
                     .domain([d3.min(mergedData, function (d) { return d.earliest_year; }),
