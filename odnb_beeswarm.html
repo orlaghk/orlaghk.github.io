@@ -148,7 +148,7 @@
             #wikiButton {
                 position: fixed;
                 top: 90px;
-                left: 500px;
+                left: calc(50% - 325px);
                 padding: 5px;
                 cursor: pointer;
                 background-color: #808080;
@@ -164,7 +164,8 @@
             #peopleButton {
                 position: fixed;
                 top: 90px;
-                left: 700px;
+                left: 50%;  
+                transform: translateX(-50%);
                 padding: 5px;
                 cursor: pointer;
                 background-color: #808080;
@@ -180,7 +181,7 @@
             #oxfordButton {
                 position: fixed;
                 top: 90px;
-                left: 900px;
+                left: calc(50% + 175px);
                 padding: 5px;
                 cursor: pointer;
                 background-color: #5bc073;
@@ -390,7 +391,7 @@
             });
         }    
 
-        var dataPath = "odnb_beeswarm_with_matched_creator.csv";
+        var dataPath = "odnb_beeswarm.csv";
         d3.csv(dataPath).then(function (mergedData) {
             mergedData.forEach(function (d) {
                 d.earliest_year = +d.earliest_year;
@@ -461,9 +462,8 @@
                     .attr('class', 'd3-tip')
                     .offset([-10, 0])
                     
-                var containerWidth = document.getElementById('chart-svg').parentElement.clientWidth;
-
-                var margin = { left: 220, top: 20, right: 20, bottom: 20 };
+                var containerWidth = window.innerWidth*.8;
+                var margin = { left: 250, top: 20, right: 20, bottom: 20 };
                 var svg = d3.select("#chart-svg")
                     .attr("width", containerWidth)
                     .attr("height", 200000);
@@ -555,7 +555,7 @@
                 // Use forceSimulation to avoid overlap
                 var simulation = d3.forceSimulation()
                     .force("x", d3.forceX(function (d) { return xScale(d.year); }))
-                    .force("y", d3.forceY(function (d) { return yScale(d.cleaned_creator) + yScale.bandwidth() / 2 -5; }))
+                    .force("y", d3.forceY(function (d) { return yScale(d.cleaned_creator) + yScale.bandwidth() / 2 -3; }))
                     .force("collide", d3.forceCollide(5))
                     .nodes(mergedData.flatMap(function (d) {
                         

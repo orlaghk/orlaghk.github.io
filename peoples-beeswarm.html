@@ -146,7 +146,7 @@
             #wikiButton {
                 position: fixed;
                 top: 90px;
-                left: calc(50% - 375px);
+                left: calc(50% - 325px);
                 padding: 5px;
                 cursor: pointer;
                 background-color: #808080;
@@ -176,7 +176,7 @@
             #oxfordButton {
                 position: fixed;
                 top: 90px;
-                left: calc(50% + 225px);
+                left: calc(50% + 175px);
                 padding: 5px;
                 cursor: pointer;
                 background-color: #808080;
@@ -448,7 +448,7 @@
                     .attr('class', 'd3-tip')
                     .offset([-10, 0])
                 
-                var containerWidth = window.innerWidth*.7;
+                var containerWidth = window.innerWidth*.8;
                 var margin = { left: 250, top: 20, right: 20, bottom: 20 };
                 var svg = d3.select("#chart-svg")
                     .attr("width", containerWidth)
@@ -540,7 +540,7 @@
                 // Use forceSimulation to avoid overlap
                 var simulation = d3.forceSimulation()
                     .force("x", d3.forceX(function (d) { return xScale(d.year); }))
-                    .force("y", d3.forceY(function (d) { return yScale(d.author) + yScale.bandwidth() / 2 -5; }))
+                    .force("y", d3.forceY(function (d) { return yScale(d.author) + yScale.bandwidth() / 2 -3; }))
                     .force("collide", d3.forceCollide(5))
                     .nodes(mergedData.flatMap(function (d) {
                         if (Array.isArray(d.dates)) {
