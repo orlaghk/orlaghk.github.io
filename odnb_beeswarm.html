@@ -462,7 +462,7 @@
                     .attr('class', 'd3-tip')
                     .offset([-10, 0])
                     
-                var containerWidth = window.innerWidth*.8;
+                var containerWidth = window.innerWidth*.75;
                 var margin = { left: 250, top: 20, right: 20, bottom: 20 };
                 var svg = d3.select("#chart-svg")
                     .attr("width", containerWidth)
@@ -574,7 +574,9 @@
                                     creator : d.creator,
                                     language: d.language,
                                     description: d.description,
-                                    subject: d.subject
+                                    subject: d.subject,
+                                    og_dates: d.og_dates,
+                                    publishers : d.publishers
                                 };
                             }).filter(d => d !== null);
                         }
@@ -1149,6 +1151,10 @@
                 var languageArray = parseArrayString(languageString);
                 var language = languageArray[index] || '';
                 
+                var publishString = cleanUpString(authorData.publishers);
+                var publishArray = parseArrayString(publishString);
+                var publish = publishArray[index] || '';
+
                 var ogString = cleanUpString(authorData.og_dates);
                 var ogArray = parseArrayString(ogString);
                 var og = ogArray[index] || year;
@@ -1171,7 +1177,8 @@
                 if (index !== -1 ) {
                     var details = "Subject: " + subject + "<br>" +
                         "Description: " + description + "<br>" +
-                        "Language: " + language;
+                        "Language: " + language + "<br>" +
+                        "Publisher: " + publish;
 
                     d3.select("#overlay-details").html(details);
                 } else {
