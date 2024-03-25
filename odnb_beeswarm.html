@@ -544,13 +544,16 @@
                     .call(xAxis);
                 
 
-
+                var circleyScale = d3.scaleBand()
+                    .domain(mergedData.map(function (d) { return d.author; }))
+                    .range([margin.top, svg.attr("height") - margin.bottom + 50])
+                    .padding(0.2);
                 
                 
                 // Use forceSimulation to avoid overlap
                 var simulation = d3.forceSimulation()
                     .force("x", d3.forceX(function (d) { return xScale(d.year); }))
-                    .force("y", d3.forceY(function (d) { return yScale(d.cleaned_creator) + yScale.bandwidth() / 2 - 3; }))  // Adjusted y-position
+                    .force("y", d3.forceY(function (d) { return yScale(d.cleaned_creator) }))  // Adjusted y-position
                     .force("collide", d3.forceCollide(5))
                     .nodes(mergedData.flatMap(function (d) {
                         
@@ -596,7 +599,7 @@
                         .on('mouseover', function (d) {
                             if (isOverlayOpen) return;
                             var xPos = xScale(d.year);
-                            var yPos = yScale(d.cleaned_creator) + yScale.bandwidth() / 2 - 5;
+                            var yPos = yScale(d.cleaned_creator) ;
               
                             // Append the line
                             svg.append("line")
