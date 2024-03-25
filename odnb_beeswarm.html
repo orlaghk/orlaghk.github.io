@@ -1167,15 +1167,24 @@
                     og = og;
                 }
 
-                d3.select("#overlay-creator").text("Author:  " + creator);
-                d3.select("#overlay-pdf-image").attr("src", url);
-                d3.select("#overlay-date").text("Year: " + og);
-                d3.select("#overlay-title").text("Title: " + title);
+                
+                // Check and replace values
+                creator = isNaN(creator) || creator === "" ? "unavailable" : creator;
+                subject = isNaN(subject) || subject === "" ? "unavailable" : subject;
+                description = isNaN(description) || description === "" ? "unavailable" : description;
+                language = isNaN(language) || language === "" ? "unavailable" : language;
+                publish = isNaN(publish) || publish === "" ? "unavailable" : publish;
+                og = isNaN(og) || og === "" ? "unavailable" : og;
 
+                d3.select("#overlay-creator").text("Author:  " + author);
+                d3.select("#overlay-pdf-image").attr("src", url);
+                d3.select("#overlay-date").text("Year: " + year);
+                d3.select("#overlay-title").text("Title: " + title);
 
                 // Display additional details based on the title index
                 if (index !== -1 ) {
-                    var details = "Subject: " + subject + "<br>" +
+                    var details = "<strong>Original Data</strong><br>" +
+                        "Subject: " + subject + "<br>" +
                         "Description: " + description + "<br>" +
                         "Language: " + language + "<br>" +
                         "Publisher: " + publish;
@@ -1185,7 +1194,6 @@
                     // Handle the case where the title is not found
                     d3.select("#overlay-details").html("Details not available");
                 }
-
 
                 // Show the overlay
                 overlay.style("display", "block");
