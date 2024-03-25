@@ -540,7 +540,7 @@
                 // Use forceSimulation to avoid overlap
                 var simulation = d3.forceSimulation()
                     .force("x", d3.forceX(function (d) { return xScale(d.year); }))
-                    .force("y", d3.forceY(function (d) { return yScale(d.author) + 12; }))
+                    .force("y", d3.forceY(function (d) { return yScale(d.author) + yScale.bandwidth() / 2 ; }))
                     .force("collide", d3.forceCollide(5))
                     .nodes(mergedData.flatMap(function (d) {
                         if (Array.isArray(d.dates)) {
@@ -581,7 +581,7 @@
                         .on('mouseover', function (d) {
                             if (isOverlayOpen) return;
                             var xPos = xScale(d.year);
-                            var yPos = yScale(d.author) + 12;
+                            var yPos = yScale(d.author) + yScale.bandwidth() / 2 - 5;
                             
                             // Append the line
                             svg.append("line")
