@@ -297,9 +297,9 @@
             <span id="info-circle"></span>
             <span class="tooltiptext">Hover over a bar or circle to find discover an authors collection, or a book. Press on a book to find out more details. Sort the order of the bars by Year, Frequency or Alphabetically. Click on the different buttons to discover different varieties of datasets.</span>
         </div>    
-        <button id="wikiButton">Wikipedia Dataset</button>
-        <button id="oxfordButton">Oxford Dataset</button>
-        <button id="peopleButton" >People Dataset</button>
+        <button id="wikiButton">Wikipedia Driven Dataset</button>
+        <button id="oxfordButton">Personal Works Dataset</button>
+        <button id="peopleButton">People Driven Dataset</button>
         <button id="backButton">Home</button>
         <button id="backToTopButton">Back To Top</button>
         <div id="overlay" class="overlay">
@@ -327,7 +327,7 @@
                 
                 <div id="chart-svg-container">
                     <svg id="chart-svg" max-width="100%" height="6000"></svg>
-                    <svg id="xAxis" width="60%" height="50"></svg>
+                    <svg id="xAxis" max-width="100%" height="50"></svg>
                 </div>
                 
                 
@@ -460,11 +460,12 @@
                 var tip = d3.tip()
                     .attr('class', 'd3-tip')
                     .offset([-10, 0])
-                    
+                
+                var containerWidth = document.getElementById('chart-svg').parentElement.clientWidth;
 
-                var margin = { left: 130, top: 20, right: 20, bottom: 20 };
+                var margin = { left: 230, top: 20, right: 20, bottom: 20 };
                 var svg = d3.select("#chart-svg")
-                    .attr("width", 1100)
+                    .attr("width", containerWidth)
                     .attr("height", 200000);
 
                 var xScale = d3.scaleLinear()
@@ -1147,12 +1148,24 @@
                 var languageString = cleanUpString(authorData.language);
                 var languageArray = parseArrayString(languageString);
                 var language = languageArray[index] || '';
-
+                
+                var ogString = cleanUpString(authorData.og_dates);
+                var ogArray = parseArrayString(ogString);
+                var og = ogArray[index] || year;
+                
+                var ogInt = String(og).replace(/\D/g, '');
+                if (ogInt.length === 4 && ogInt !== String(year) || ogInt === 'nan' || ogInt === '') {
+                    console.log(og)
+                    og = year;
+                } else {
+                    og = og;
+                }
 
                 d3.select("#overlay-creator").text("Author:  " + creator);
                 d3.select("#overlay-pdf-image").attr("src", url);
-                d3.select("#overlay-date").text("Date: " + year);
+                d3.select("#overlay-date").text("Year: " + og);
                 d3.select("#overlay-title").text("Title: " + title);
+
 
                 // Display additional details based on the title index
                 if (index !== -1 ) {

@@ -128,8 +128,6 @@
                 color: white;
             }
     
-            
-    
             #backButton {
                 position: fixed;
                 top: 15px;
@@ -297,9 +295,9 @@
             <span id="info-circle"></span>
             <span class="tooltiptext">Hover over a bar or circle to find discover an authors collection, or a book. Press on a book to find out more details. Sort the order of the bars by Year, Frequency or Alphabetically. Click on the different buttons to discover different varieties of datasets.</span>
         </div>    
-        <button id="wikiButton">Wikipedia Dataset</button>
-        <button id="oxfordButton">Oxford Dataset</button>
-        <button id="peopleButton" >People Dataset</button>
+        <button id="wikiButton">Wikipedia Driven Dataset</button>
+        <button id="oxfordButton">Personal Works Dataset</button>
+        <button id="peopleButton">People Driven Dataset</button>
         <button id="backButton">Home</button>
         <button id="backToTopButton">Back To Top</button>
         <div id="overlay" class="overlay">
@@ -324,17 +322,13 @@
         </div>
         <div id="chart-container">
             <div id="myDiv">
-                
                 <div id="chart-svg-container">
                     <svg id="chart-svg" max-width="100%" height="6000"></svg>
                     <svg id="xAxis" width="60%" height="50"></svg>
                 </div>
-                
-                
             </div>
             <div id="titles-container">
                 <div id="author-title"></div>
-                
                 <div id="date"></div>
                 <div id="title"></div>
             </div>
@@ -390,18 +384,16 @@
             });
         }    
 
-        var dataPath = "another_new_peoples_beeswarm.csv";
+        var dataPath = "peoples_beeswarm.csv";
         d3.csv(dataPath).then(function (mergedData) {
             mergedData.forEach(function (d) {
                 d.earliest_year = +d.earliest_year;
                 d.latest_year = +d.latest_year;
                 d.Frequency = +d.Frequency;
                 try {
-                // Attempt to parse 'dates' as JSON
                 d.dates = JSON.parse(d.dates.replace(/"/g, ""));
             } catch (error) {
                 console.error("Error parsing 'dates' as JSON:", error);
-                // Handle the error (e.g., set 'dates' to an empty array)
                 d.dates = [];
             }
             
@@ -457,12 +449,13 @@
                 var tip = d3.tip()
                     .attr('class', 'd3-tip')
                     .offset([-10, 0])
-                    
+                
+                var containerWidth = document.getElementById('chart-svg').parentElement.clientWidth;
 
-                var margin = { left: 130, top: 20, right: 20, bottom: 20 };
+                var margin = { left: 250, top: 20, right: 20, bottom: 20 };
                 var svg = d3.select("#chart-svg")
-                    .attr("width", 1100)
-                    .attr("height", 200000);
+                    .attr("width", containerWidth)
+                    .attr("height", 201000);
 
                 var xScale = d3.scaleLinear()
                     .domain([d3.min(mergedData, function (d) { return d.earliest_year; }),
@@ -496,7 +489,7 @@
                     .attr("class", "rect")
                     .attr("opacity", 0.4)
                     .attr("x", function (d) { return xScale(d.earliest_year); })
-                    .attr("y", function (d) { return yScale(d.author) +2; }) // Adjusted y-position
+                    .attr("y", function (d) { return yScale(d.author) ; }) // Adjusted y-position
                     .attr("width", function (d) {
                         return Math.max(5, xScale(d.latest_year) - xScale(d.earliest_year));
                     })
@@ -515,7 +508,7 @@
                     .append("text")
                     .attr("class", "creator-text")
                     .attr("x", function (d) { return xScale(d.earliest_year) - 15; }) // Adjusted x-position
-                    .attr("y", function (d) { return yScale(d.author) + 12; }) // Adjusted y-position
+                    .attr("y", function (d) { return yScale(d.author) + 10; }) // Adjusted y-position
                     .text(function (d) { return d.author; })
                     .attr("text-anchor", "end")
                     .attr("font-size", "12px")
@@ -1136,11 +1129,23 @@
                 var languageArray = parseArrayString(languageString);
                 var language = languageArray[index] || '';
 
+                var ogString = cleanUpString(authorData.og_dates);
+                var ogArray = parseArrayString(ogString);
+                var og = ogArray[index] || year;
+                
+                var ogInt = String(og).replace(/\D/g, '');
+                if (ogInt.length === 4 && ogInt !== String(year) || ogInt === 'nan' || ogInt === '') {
+                    console.log(og)
+                    og = year;
+                } else {
+                    og = og;
+                }
 
                 d3.select("#overlay-creator").text("Author:  " + creator);
                 d3.select("#overlay-pdf-image").attr("src", url);
-                d3.select("#overlay-date").text("Date: " + year);
+                d3.select("#overlay-date").text("Year: " + og);
                 d3.select("#overlay-title").text("Title: " + title);
+
 
                 // Display additional details based on the title index
                 if (index !== -1 ) {
