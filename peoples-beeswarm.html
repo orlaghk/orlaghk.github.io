@@ -475,7 +475,7 @@
                 
                 var yScale = d3.scaleBand()
                     .domain(mergedData.map(function (d) { return d.author; }))
-                    .range([margin.top, svg.attr("height") - margin.bottom])
+                    .range([margin.top, svg.attr("height") - margin.bottom - 50])
                     .padding(0.2);
 
                 // Adding rectangles to represent Gantt bars
@@ -577,7 +577,6 @@
                             if (isOverlayOpen) return;
                             var xPos = xScale(d.year);
                             var yPos = yScale(d.author) + yScale.bandwidth() / 2 ; 
-                            // Append the line
                             svg.append("line")
                                 .attr("class", "hover-line")
                                 .attr("x1", xPos)
