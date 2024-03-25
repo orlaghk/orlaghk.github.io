@@ -545,7 +545,7 @@
                 
 
                 var circleyScale = d3.scaleBand()
-                    .domain(mergedData.map(function (d) { return d.author; }))
+                    .domain(mergedData.map(function (d) { return d.cleaned_creator; }))
                     .range([margin.top, svg.attr("height") - margin.bottom + 40])
                     .padding(0.2);
                 
