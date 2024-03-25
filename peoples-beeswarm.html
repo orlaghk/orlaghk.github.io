@@ -476,7 +476,7 @@
                 var yScale = d3.scaleBand()
                     .domain(mergedData.map(function (d) { return d.author; }))
                     .range([margin.top, svg.attr("height") - margin.bottom])
-                    .padding(0);
+                    .padding(0.2);
 
                 // Adding rectangles to represent Gantt bars
                 var bars = svg.selectAll("rect")
@@ -486,7 +486,7 @@
                     .attr("class", "rect")
                     .attr("opacity", 0.4)
                     .attr("x", function (d) { return xScale(d.earliest_year); })
-                    .attr("y", function (d) { return yScale(d.author) + 2; }) // Adjusted y-position
+                    .attr("y", function (d) { return yScale(d.author) ; }) // Adjusted y-position
                     .attr("width", function (d) {
                         return Math.max(5, xScale(d.latest_year) - xScale(d.earliest_year));
                     })
@@ -505,7 +505,7 @@
                     .append("text")
                     .attr("class", "creator-text")
                     .attr("x", function (d) { return xScale(d.earliest_year) - 15; }) // Adjusted x-position
-                    .attr("y", function (d) { return yScale(d.author) + 10; }) // Adjusted y-position
+                    .attr("y", function (d) { return yScale(d.author) + yScale.bandwidth() / 2; })
                     .text(function (d) { return d.author; })
                     .attr("text-anchor", "end")
                     .attr("font-size", "12px")
@@ -526,7 +526,6 @@
                     .attr("y2", mergedData.length * 30)
                     .attr("stroke", "white"); 
 
-                
                 // Adding x-axis
                 var xAxis = d3.axisBottom(xScale);
                 svg.append("g")
@@ -536,7 +535,7 @@
                 // Use forceSimulation to avoid overlap
                 var simulation = d3.forceSimulation()
                     .force("x", d3.forceX(function (d) { return xScale(d.year); }))
-                    .force("y", d3.forceY(function (d) { return yScale(d.author) + yScale.bandwidth() / 2 - 3; }))  // Adjusted y-position
+                    .force("y", d3.forceY(function (d) { return yScale(d.author) + yScale.bandwidth() / 2 ; }))  // Adjusted y-position
                     .force("collide", d3.forceCollide(5))
                     .nodes(mergedData.flatMap(function (d) {
                         if (Array.isArray(d.dates)) {
@@ -577,7 +576,7 @@
                         .on('mouseover', function (d) {
                             if (isOverlayOpen) return;
                             var xPos = xScale(d.year);
-                            var yPos = yScale(d.author) + yScale.bandwidth() / 2 - 3; 
+                            var yPos = yScale(d.author) + yScale.bandwidth() / 2 ; 
                             // Append the line
                             svg.append("line")
                                 .attr("class", "hover-line")
