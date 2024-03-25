@@ -555,7 +555,7 @@
                 // Use forceSimulation to avoid overlap
                 var simulation = d3.forceSimulation()
                     .force("x", d3.forceX(function (d) { return xScale(d.year); }))
-                    .force("y", d3.forceY(function (d) { return yScale(d.cleaned_creator) + yScale.bandwidth() /2; }))
+                    .force("y", d3.forceY(function (d) { return yScale(d.cleaned_creator) + yScale.bandwidth() / 2 - 3; }))  // Adjusted y-position
                     .force("collide", d3.forceCollide(5))
                     .nodes(mergedData.flatMap(function (d) {
                         
@@ -1169,12 +1169,13 @@
 
                 
                 // Check and replace values
-                creator = isNaN(creator) || creator === "" ? "unavailable" : creator;
-                subject = isNaN(subject) || subject === "" ? "unavailable" : subject;
-                description = isNaN(description) || description === "" ? "unavailable" : description;
-                language = isNaN(language) || language === "" ? "unavailable" : language;
-                publish = isNaN(publish) || publish === "" ? "unavailable" : publish;
-                og = isNaN(og) || og === "" ? "unavailable" : og;
+                creator = creator === "NaN" || creator === "" ? "unavailable" : creator;
+                subject = subject === "NaN" || subject === "" ? "unavailable" : subject;
+                description = description === "NaN" || description === "" ? "unavailable" : description;
+                language = language === "NaN" || language === "" ? "unavailable" : language;
+                publish = publish === "NaN" || publish === "" ? "unavailable" : publish;
+                og = og === "NaN" || og === "" ? "unavailable" : og;
+
 
                 d3.select("#overlay-creator").text("Author:  " + author);
                 d3.select("#overlay-pdf-image").attr("src", url);
@@ -1183,7 +1184,7 @@
 
                 // Display additional details based on the title index
                 if (index !== -1 ) {
-                    var details = "<strong>Original Data</strong><br>" +
+                    var details = 
                         "Subject: " + subject + "<br>" +
                         "Description: " + description + "<br>" +
                         "Language: " + language + "<br>" +
