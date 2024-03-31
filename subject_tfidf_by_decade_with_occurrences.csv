@@ -1,4 +1,4 @@
-decade,word,tf,occurrences
+decade,word,tfidf,occurrences
 0-50,medicin,1.0,[18852]
 850-900,religion,0.5,[13508]
 850-900,polit,0.5,[13508]

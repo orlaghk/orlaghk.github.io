@@ -1,4 +1,4 @@
-decade,word,tf,occurrences
+decade,word,tfidf,occurrences
 0-50,schiferli,0.14285714285714285,[18852]
 0-50,rudolphu,0.14285714285714285,[18852]
 0-50,king,0.14285714285714285,[19065]
