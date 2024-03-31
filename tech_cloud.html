@@ -170,20 +170,33 @@
         left: 48%;
         transform: translate(-50%, -50%);
         z-index: 4; 
-    }
-    #backButton:hover, #tf-button:hover {
-        background-color: #deb5e5; 
-    }
+        }
+        #overlay-close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                cursor: pointer;
+        }
+        .overlay-close {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                cursor: pointer;
+        }
 
-    .grey-rectangle {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 50px; /* Adjust this value as needed */
-        background-color: #454141;
-        z-index: 2;
-    }
+        #backButton:hover, #tf-button:hover {
+            background-color: #deb5e5; 
+        }
+
+        .grey-rectangle {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50px; /* Adjust this value as needed */
+            background-color: #454141;
+            z-index: 2;
+        }
 
     </style>
 
@@ -214,9 +227,11 @@
     </div>
     <button id="backButton" onclick="goBack()">Home</button>
     
-    <svg id="line-svg" width="100%" height="2000"></svg>
+    <svg id="line-svg" width="100%" height="1500"></svg>
     
-    <div id="overlay"></div>
+    <div id="overlay">
+        <div id="overlay-close" class="overlay-close">X</div>
+    </div>
 
     <script>
         var decades; 
@@ -228,6 +243,7 @@
         var ogDates;
         var selectedOption; 
         var chartSvg = d3.select("#line-svg");
+        var s;
     
 
         function goBack() {
@@ -249,20 +265,24 @@
                     file = "tfidf_stemmed_by_decade_with_occurrences.csv"
                     refined_by = "description"
                     // console.log("d")
+                    s=21
                     break;
                 case "subject":
                     // console.log("s")
                     file = "subject_tfidf_by_decade_with_occurrences.csv"
                     refined_by = "subject"
+                    s=1000
                     break;
                 case "creator":
                     // console.log("c")
                     file = "creator_tfidf_by_decade_with_occurrences.csv"
                     refined_by = "creator"
+                    s=900
                     break;
                 case "title":
                     file = "title_tfidf_stemmed_by_decade_with_occurrences.csv"
                     refined_by = "title"
+                    s=20
                     break;
                 default:
                     break;
@@ -274,6 +294,14 @@
         overlayElement = document.getElementById("overlay");
         // Clear the overlay before appending new details
         overlayElement.innerHTML = '';
+        // Add the close button back to the overlay
+        var closeButton = document.createElement("div");
+            closeButton.id = "overlay-close";
+            closeButton.innerText = "X";
+            closeButton.addEventListener("click", function() {
+                overlayElement.style.display = "none";
+        });
+        overlayElement.appendChild(closeButton);
 
         // Display word and decade at the top
         var header = document.createElement("div");
@@ -379,6 +407,7 @@
                     detailsSquare.innerHTML += '<div>Subject: ' + details.subject + '</div>';
                     detailsSquare.innerHTML += '<div>Year: ' + details.og_dates + '</div>';
                     detailsSquare.innerHTML += '<div>Description: ' + details.description + '</div>';
+                    detailsSquare.innerHTML += '<div>Language: ' + details.language + '</div>';
                 }
 
                 if (refined_by === 'creator') {
@@ -388,6 +417,7 @@
                     detailsSquare.innerHTML += '<div>Subject: ' + details.subject + '</div>';
                     detailsSquare.innerHTML += '<div>Year: ' + details.og_dates + '</div>';
                     detailsSquare.innerHTML += '<div>Description: ' + details.description + '</div>';
+                    detailsSquare.innerHTML += '<div>Language: ' + details.language + '</div>';
                 }
 
                 if (refined_by === 'subject') {
@@ -397,6 +427,7 @@
                     detailsSquare.innerHTML += '<div style="color: #ead4ee">Subject: ' + highlightMatchingWords(details.subject, word, "#d773e8") + '</div>';
                     detailsSquare.innerHTML += '<div>Year: ' + details.og_dates + '</div>';
                     detailsSquare.innerHTML += '<div>Description: ' + details.description + '</div>';
+                    detailsSquare.innerHTML += '<div>Language: ' + details.language + '</div>';
                 }
 
                 if (refined_by === 'description') {
@@ -406,6 +437,7 @@
                     detailsSquare.innerHTML += '<div>Subject: ' + details.subject + '</div>';
                     detailsSquare.innerHTML += '<div>Year: ' + details.og_dates + '</div>';
                     detailsSquare.innerHTML += '<div style="color: #ead4ee">Description: ' + highlightMatchingWords(details.description, word, "#d773e8") + '</div>';
+                    detailsSquare.innerHTML += '<div>Language: ' + details.language + '</div>';
                 }
                 detailsContainer.appendChild(detailsSquare);
 
@@ -530,6 +562,14 @@
                 overlayElement = document.getElementById("overlay");
                 // Clear the overlay before appending new details
                 overlayElement.innerHTML = '';
+                // Add the close button back to the overlay
+                var closeButton = document.createElement("div");
+                    closeButton.id = "overlay-close";
+                    closeButton.innerText = "X";
+                    closeButton.addEventListener("click", function() {
+                        overlayElement.style.display = "none";
+                });
+                overlayElement.appendChild(closeButton);
     
                 // Display word and decade at the top
                 var header = document.createElement("div");
@@ -622,7 +662,7 @@
                             if (wordObj) {
                                 var tfidf = +wordObj.tfidf;
                                 var occurrences = parseOccurrences(wordObj.occurrences);
-                                var fontSize = Math.min(30, Math.max(8, 60 * Math.log(tfidf +0.4)));
+                                var fontSize = Math.min(30, Math.max(8, s * tfidf ));
                                 // Use an inline function to pass parameters to the functions
                                 tableHtml += `<td style="font-size: ${fontSize}px;" onmouseover="highlightWord(this, '${wordObj.word}', ${tfidf}, ${JSON.stringify(occurrences)})" onmouseout="removeHighlight(this)" onclick="changeMatchingWords(this, '${wordObj.word}', ${tfidf}, ${JSON.stringify(occurrences)})">${wordObj.word}</td>`;
                             } else {
@@ -661,18 +701,11 @@
                 overlayElement.style.display = "none";
             }
 
-        document.addEventListener('click', function (event) {
-            if (event.target.closest('.occurrence-square')) {
-                // Clicking on an occurrence-square, hide the overlay
-                hideOverlay();
-            }
-            overlayElement = document.getElementById("overlay");
-            overlayElement.addEventListener('click', function(event) {
-                    // Hide overlay
-                    overlayElement.style.display = 'none';
-                });
-            
-        })
+            var overlayClose = d3.select("#overlay-close");
+
+            overlayClose.on("click", function () {
+                hideOverlay()
+            });
 
             // Function to highlight the word on mouseover
             function highlightWord(cell, word, tfidf, occurrences) {
