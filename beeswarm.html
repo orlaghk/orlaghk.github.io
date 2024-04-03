@@ -22,7 +22,7 @@
                 top: 0;
                 left: 0;
                 width: 78%;
-                height: 125px; /* Adjust this value as needed */
+                height: 125px; 
                 background-color: #6d6969;
                 z-index: 2;
             }
@@ -353,7 +353,7 @@
         var isOverlayOpen = false;
         var selectedOption; 
 
-        console.log("Selected option:", selectedOption);
+        // console.log("Selected option:", selectedOption);
             
         var backButton = document.getElementById("backButton");
         var peopleButton= document.getElementById("peopleButton");
@@ -392,7 +392,7 @@
                 d.dates = JSON.parse(d.dates.replace(/"/g, ""));
             } catch (error) {
                 console.error("Error parsing 'dates' as JSON:", error);
-                // Handle the error (e.g., set 'dates' to an empty array)
+                // Handle the error
                 d.dates = [];
             }
             });
@@ -402,7 +402,7 @@
             sortData(selectedOption);
 
             function sortData(selectedOption) {
-                console.log(selectedOption)
+                // console.log(selectedOption)
                 switch (selectedOption) {
                     case "dateLowToHigh":
                         mergedData.sort((a, b) => a.earliest_year - b.earliest_year);
@@ -717,7 +717,7 @@
                         // Try to parse the titles string
                         try {
                             titles = JSON.parse(replaceQuotesInsideBrackets(authorData.titles));
-                            console.log(titles)
+                            // console.log(titles)
                         } catch (error) {
                             console.error('Error parsing titles:', error);
                             titles = [];
@@ -806,7 +806,7 @@
                         titles = authorData.titles;
                         
                     } else {
-                        console.log(titles)
+                        // console.log(titles)
                         titles = [];
                     }
 
@@ -859,7 +859,7 @@
                 titlesContainer.selectAll(".title-box").remove();
 
                 svg.selectAll(".creator-text")
-                .attr("fill", "white")
+                    .attr("fill", "white")
                     .attr("font-size", "12px")
                     .filter(function (d) {
                         return d.author === author;
@@ -886,7 +886,7 @@
                         titles = authorData.titles;
                         
                     } else {
-                        console.log(titles)
+                        // console.log(titles)
                         titles = [];
                     }
 
@@ -1088,8 +1088,6 @@
             // For creators with commas within the name, we need to join them back together
             return creators.map(creator => creator.replace(/^'|'$/g, ''));
             }
-
-            
             
             function displayOverlay(author, year, title, url, index) {
                 isOverlayOpen = true;
@@ -1136,7 +1134,7 @@
                 
                 var ogInt = String(og).replace(/\D/g, '');
                 if (ogInt.length === 4 && ogInt !== String(year) || ogInt === 'nan' || ogInt === '') {
-                    console.log(og)
+                    // console.log(og)
                     og = year;
                 } else {
                     og = og;
@@ -1181,7 +1179,7 @@
                     JSON.parse(str);
                     return true;
                 } catch (e) {
-                    console.log(str)
+                    // console.log(str)
                     return false;
                 }
             }

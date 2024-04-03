@@ -194,7 +194,7 @@
                 top: 0;
                 left: 0;
                 width: 100%;
-                height: 50px; /* Adjust this value as needed */
+                height: 50px;
                 background-color: #454141;
                 z-index: 2;
             }
@@ -356,8 +356,6 @@
 
             // Loop through occurrences to get corresponding details
             occurrences.forEach(function (occurrence) {
-                // Assuming the 'occurrence' field in tfidf_stemmed_by_decade_with_occurrences.csv
-                // is an array of indices corresponding to rows in cleaned_author_df.csv
                 var rowIndex = parseInt(occurrence);
 
                 // Check if the rowIndex is a valid index in the author data
@@ -633,8 +631,6 @@
 
                 // Loop through occurrences to get corresponding details
                 occurrences.forEach(function (occurrence) {
-                    // Assuming the 'occurrence' field in tf_stemmed_by_decade_with_occurrences.csv
-                    // is an array of indices corresponding to rows in cleaned_author_df.csv
                     var rowIndex = parseInt(occurrence);
 
                     // Check if the rowIndex is a valid index in the author data
@@ -756,7 +752,7 @@
                             var tf = +wordObj.tf;
                             var occurrences = parseOccurrences(wordObj.occurrences);
                             var fontSize = Math.min(30, Math.max(8, s * tf));
-                            // Use an inline function to pass parameters to the functions
+                            // pass parameters to the functions
                             tableHtml += `<td style="font-size: ${fontSize}px;" onmouseover="highlightWord(this, '${wordObj.word}', ${tf}, ${JSON.stringify(occurrences)})" onmouseout="removeHighlight(this)" onclick="changeMatchingWords(this, '${wordObj.word}', ${tf}, ${JSON.stringify(occurrences)})">${wordObj.word}</td>`;
                         } else {
                             tableHtml += '<td></td>';
