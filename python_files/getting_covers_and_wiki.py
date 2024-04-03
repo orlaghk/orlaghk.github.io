@@ -365,7 +365,7 @@ for index, row in new_df.iterrows():
         elif result is False:
             print(f"Creator Name: {row['creator']}")
             
-            # Ask the user for confirmation to add the row
+            # Ask for confirmation to add the row
             user_input = input("Do you want to add this row? (yes/no): ")
             if user_input.lower() == 'yes':
                 # Create a DataFrame with the current row and the same columns as the first row
